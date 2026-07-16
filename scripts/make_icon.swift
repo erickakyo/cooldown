@@ -46,11 +46,8 @@ func drawIcon(size: CGFloat) -> NSImage {
         ))
     }
 
-    // Ampulheta branca + floco de neve ciano no canto (variação B escolhida)
-    drawSymbol("hourglass", pointSize: rect.width * 0.55, color: .white, dx: 0, dy: 0)
-    drawSymbol("snowflake", pointSize: rect.width * 0.2,
-               color: NSColor(calibratedRed: 0.75, green: 0.95, blue: 1, alpha: 1),
-               dx: rect.width * 0.28, dy: rect.width * 0.28)
+    // Floco de neve branco centralizado (variação C escolhida pelo Erick)
+    drawSymbol("snowflake", pointSize: rect.width * 0.58, color: .white, dx: 0, dy: 0)
 
     image.unlockFocus()
     return image
