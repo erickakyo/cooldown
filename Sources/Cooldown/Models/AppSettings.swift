@@ -29,8 +29,8 @@ final class AppSettings: ObservableObject, Codable {
     static let defaultsKey = "cooldown.settings"
 
     init() {
-        let systemIsPT = Locale.preferredLanguages.first?.hasPrefix("pt") ?? false
-        language = systemIsPT ? .pt : .en
+        // Padrão: inglês (público global); o usuário troca para 🇧🇷 nas configurações.
+        language = .en
         appearance = .system
         defaultSoundName = "Glass"
         showCountdownInMenuBar = true

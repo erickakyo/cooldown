@@ -72,7 +72,9 @@ struct L {
     var visitSite: String { t("Visitar salto.solutions", "Visit salto.solutions") }
 
     // Doações
-    var donate: String { t("Pague um café", "Buy me a coffee") }
+    // Mantido em inglês nos dois idiomas — "Buy me a coffee" é o termo
+    // consagrado para doação em apps indie.
+    var donate: String { "Buy me a coffee ☕" }
     var donateSubtitle: String {
         t("O Cooldown é gratuito. Se ele te ajuda, um cafezinho mantém as atualizações vindo. 💙",
           "Cooldown is free. If it helps you, a coffee keeps the updates coming. 💙")

@@ -8,7 +8,8 @@ horas a janela começou) e o Cooldown conta o resto. Desenvolvido pela Salto
 Solutions (https://salto.solutions) como vitrine/canal de contato.
 
 - Nome: **Cooldown** — bundle id `solutions.salto.cooldown`
-- Idiomas: pt-BR 🇧🇷 e en-US 🇺🇸 (troca em runtime, sem relaunch)
+- Idiomas: pt-BR 🇧🇷 e en-US 🇺🇸 (troca em runtime, sem relaunch); **padrão: inglês**
+- Botão de doação sempre "Buy me a coffee ☕" (termo consagrado, nos dois idiomas)
 - macOS mínimo: 14 (Sonoma); Liquid Glass nativo no 26+, fallback translúcido
 
 ## Presets de serviço (2026-07)
