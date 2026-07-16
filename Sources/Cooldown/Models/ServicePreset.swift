@@ -9,11 +9,13 @@ struct ServicePreset: Identifiable, Hashable {
     let windowDuration: TimeInterval
 
     static let claude = ServicePreset(id: "claude", name: "Claude", symbol: "sparkle", windowDuration: 5 * 3600)
+    static let codex = ServicePreset(id: "codex", name: "Codex", symbol: "terminal", windowDuration: 5 * 3600)
     static let chatgpt = ServicePreset(id: "chatgpt", name: "ChatGPT", symbol: "bubble.left.and.bubble.right", windowDuration: 3 * 3600)
+    static let antigravity = ServicePreset(id: "antigravity", name: "Antigravity", symbol: "arrow.up.circle", windowDuration: 5 * 3600)
     static let gemini = ServicePreset(id: "gemini", name: "Gemini", symbol: "diamond", windowDuration: 24 * 3600)
     static let custom = ServicePreset(id: "custom", name: "Custom", symbol: "slider.horizontal.3", windowDuration: 5 * 3600)
 
-    static let all: [ServicePreset] = [.claude, .chatgpt, .gemini, .custom]
+    static let all: [ServicePreset] = [.claude, .codex, .chatgpt, .antigravity, .gemini, .custom]
 
     static func find(_ id: String) -> ServicePreset {
         all.first { $0.id == id } ?? .custom

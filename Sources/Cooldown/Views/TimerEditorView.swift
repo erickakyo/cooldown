@@ -114,7 +114,8 @@ struct TimerEditorView: View {
                 HStack {
                     Text(l.windowLabel)
                     Spacer()
-                    Stepper(value: $model.windowHours, in: 0...48) {
+                    // Até 168h (1 semana) — cobre limites semanais como o do Codex.
+                    Stepper(value: $model.windowHours, in: 0...168) {
                         Text("\(model.windowHours)\(l.hoursShort)").monospacedDigit()
                     }
                     Stepper(value: $model.windowMinutes, in: 0...59, step: 5) {
@@ -139,7 +140,7 @@ struct TimerEditorView: View {
 
                 if model.inputMode == .remaining {
                     HStack {
-                        Stepper(value: $model.remainingHours, in: 0...48) {
+                        Stepper(value: $model.remainingHours, in: 0...168) {
                             Text("\(model.remainingHours)\(l.hoursShort)").monospacedDigit()
                         }
                         Stepper(value: $model.remainingMinutes, in: 0...59) {

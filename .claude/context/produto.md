@@ -16,9 +16,13 @@ Solutions (https://salto.solutions) como vitrine/canal de contato.
 | Serviço | Janela padrão | Observação |
 |---|---|---|
 | Claude | 5h | janela rolante; começa na 1ª mensagem |
-| ChatGPT | 3h | limites variam por plano |
-| Gemini | 24h | quota diária |
+| Codex | 5h | jul/2026: OpenAI removeu a janela de 5h dos planos pagos, mantendo teto semanal — usuário ajusta p/ 168h se for o caso |
+| ChatGPT | 3h | limites de mensagens variam por plano/modelo |
+| Antigravity | 5h | quotas dos planos Google AI Pro/Ultra renovam a cada 5h |
+| Gemini | 24h | quota diária (app/API) |
 | Personalizado | livre | nome + duração definidos pelo usuário |
+
+Janela máxima configurável: 168h (1 semana), para cobrir tetos semanais.
 
 Duração é editável em qualquer preset. Novos presets são entregues via
 atualização do app (sem backend).
