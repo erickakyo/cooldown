@@ -56,6 +56,9 @@ struct MenuPopover: View {
         // Altura fixa: o painel do MenuBarExtra corta o conteúdo quando a
         // altura é variável (min/max) — bug de sizing do estilo .window.
         .frame(width: 340, height: 460)
+        // O vidro do macOS 26 é transparente demais para leitura — este
+        // material extra escurece o que está atrás do painel.
+        .background(.regularMaterial)
     }
 
     private var header: some View {

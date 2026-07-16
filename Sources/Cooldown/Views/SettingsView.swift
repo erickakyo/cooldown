@@ -19,34 +19,26 @@ struct SettingsView: View {
                 GlassCard {
                     VStack(alignment: .leading, spacing: 10) {
                         // Idioma com bandeirinhas
-                        HStack {
-                            Text(l.languageLabel)
-                            Spacer()
-                            Picker("", selection: $settings.language) {
-                                ForEach(AppLanguage.allCases, id: \.self) { lang in
-                                    Text("\(lang.flag) \(lang.label)").tag(lang)
-                                }
-                            }
-                            .labelsHidden()
-                            .fixedSize()
-                            .onChange(of: settings.language) { _, newValue in
-                                NotificationService.shared.updateCategories(language: newValue)
-                            }
+                        PillPicker(
+                            title: l.languageLabel,
+                            selection: $settings.language,
+                            options: AppLanguage.allCases.map { ($0, "\($0.flag) \($0.label)") }
+                        )
+                        .onChange(of: settings.language) { _, newValue in
+                            NotificationService.shared.updateCategories(language: newValue)
                         }
 
-                        HStack {
-                            Text(l.appearance)
-                            Spacer()
-                            Picker("", selection: $settings.appearance) {
-                                Text(l.appearanceSystem).tag(AppAppearance.system)
-                                Text(l.appearanceLight).tag(AppAppearance.light)
-                                Text(l.appearanceDark).tag(AppAppearance.dark)
-                            }
-                            .labelsHidden()
-                            .fixedSize()
-                            .onChange(of: settings.appearance) { _, _ in
-                                settings.applyAppearance()
-                            }
+                        PillPicker(
+                            title: l.appearance,
+                            selection: $settings.appearance,
+                            options: [
+                                (AppAppearance.system, l.appearanceSystem),
+                                (AppAppearance.light, l.appearanceLight),
+                                (AppAppearance.dark, l.appearanceDark),
+                            ]
+                        )
+                        .onChange(of: settings.appearance) { _, _ in
+                            settings.applyAppearance()
                         }
                     }
                 }
@@ -67,11 +59,11 @@ struct SettingsView: View {
                             .controlSize(.small)
 
                         HStack {
-                            Picker(l.defaultSoundLabel, selection: $settings.defaultSoundName) {
-                                ForEach(SoundService.availableSounds, id: \.self) { name in
-                                    Text(name).tag(name)
-                                }
-                            }
+                            PillPicker(
+                                title: l.defaultSoundLabel,
+                                selection: $settings.defaultSoundName,
+                                options: SoundService.availableSounds.map { ($0, $0) }
+                            )
                             Button {
                                 SoundService.preview(settings.defaultSoundName)
                             } label: {

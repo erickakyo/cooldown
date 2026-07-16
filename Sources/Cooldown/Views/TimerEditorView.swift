@@ -90,11 +90,13 @@ struct TimerEditorView: View {
     private var serviceSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 8) {
-                Picker(l.service, selection: $model.serviceID) {
-                    ForEach(ServicePreset.all) { preset in
-                        Text(preset.id == "custom" ? l.customName : preset.name).tag(preset.id)
+                PillPicker(
+                    title: l.service,
+                    selection: $model.serviceID,
+                    options: ServicePreset.all.map {
+                        ($0.id, $0.id == "custom" ? l.customName : $0.name)
                     }
-                }
+                )
                 .onChange(of: model.serviceID) { _, newValue in
                     let preset = ServicePreset.find(newValue)
                     model.windowHours = Int(preset.windowDuration) / 3600
@@ -127,12 +129,13 @@ struct TimerEditorView: View {
     private var timeSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 10) {
-                Picker("", selection: $model.inputMode) {
-                    Text(l.timeRemaining).tag(EditorModel.InputMode.remaining)
-                    Text(l.startedAt).tag(EditorModel.InputMode.startedAt)
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
+                PillSegmented(
+                    selection: $model.inputMode,
+                    options: [
+                        (EditorModel.InputMode.remaining, l.timeRemaining),
+                        (EditorModel.InputMode.startedAt, l.startedAt),
+                    ]
+                )
 
                 if model.inputMode == .remaining {
                     HStack {
@@ -158,13 +161,16 @@ struct TimerEditorView: View {
                 }
                 .buttonStyle(GlassPillButtonStyle())
 
-                HStack(spacing: 4) {
-                    Image(systemName: "bell")
-                    Text(model.computedReset, style: .time)
-                        .monospacedDigit()
+                // Horário do alerta rotulado — sem rótulo os usuários confundem
+                // com a duração configurada.
+                HStack(spacing: 5) {
+                    Image(systemName: "bell.badge.fill")
+                        .foregroundStyle(.tint)
+                    Text("\(l.alertAt) ")
+                        + Text(model.computedReset, style: .time).fontWeight(.semibold)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.callout)
+                .monospacedDigit()
             }
         }
     }
@@ -173,12 +179,12 @@ struct TimerEditorView: View {
         GlassCard {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Picker(l.sound, selection: $model.soundName) {
-                        Text(l.defaultSound).tag(String?.none)
-                        ForEach(SoundService.availableSounds, id: \.self) { name in
-                            Text(name).tag(String?.some(name))
-                        }
-                    }
+                    PillPicker(
+                        title: l.sound,
+                        selection: $model.soundName,
+                        options: [(String?.none, l.defaultSound)]
+                            + SoundService.availableSounds.map { (String?.some($0), $0) }
+                    )
                     Button {
                         SoundService.preview(model.soundName ?? settings.defaultSoundName)
                     } label: {

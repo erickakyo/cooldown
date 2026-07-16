@@ -39,6 +39,7 @@ struct L {
           "Re-arms automatically when it fires. May drift from the real reset — the window only starts when you use the AI.")
     }
     var sound: String { t("Som", "Sound") }
+    var alertAt: String { t("Alerta às", "Alert at") }
     var defaultSound: String { t("Padrão do app", "App default") }
     var create: String { t("Criar", "Create") }
     var save: String { t("Salvar", "Save") }

@@ -6,8 +6,8 @@ import UserNotifications
 final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationService()
 
-    static let categoryID = "COOLDOWN_TIMER_FIRED"
-    static let rearmActionID = "COOLDOWN_REARM"
+    nonisolated static let categoryID = "COOLDOWN_TIMER_FIRED"
+    nonisolated static let rearmActionID = "COOLDOWN_REARM"
 
     /// Chamado pelo delegate quando o usuário toca "Comecei agora" na notificação.
     var onRearmRequested: ((UUID) -> Void)?
