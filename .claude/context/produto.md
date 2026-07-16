@@ -75,10 +75,47 @@ README); ninguém pode reutilizar o código legalmente. Releases publicadas com
 `scripts/release.sh` (DMG + tag `vX.Y.Z`) — é o que alimenta o update checker
 do app.
 
-## Pendências (fora do código)
+## Estado atual (2026-07-16)
 
-- [ ] Criar Payment Link no Stripe e link/código Pix no Mercado Pago → `AppConfig.swift`
-- [x] Criar repositório GitHub (`erickakyo/cooldown`, público)
-- [ ] Conta Apple Developer p/ notarização
-- [ ] Revisar texto da janela "Sobre" com os serviços reais do site salto.solutions
-- [ ] Ícone definitivo (o atual é gerado por script: gradiente + ampulheta)
+v0.1.0 publicada (código + release com DMG no GitHub). Implementado e testado:
+timers múltiplos com presets (Claude/Codex/ChatGPT/Antigravity/Gemini/custom),
+notificação com re-arme em 1 clique, auto-repetição opcional, pré-alerta
+(5/10/15 min), onboarding na primeira abertura, menu de contexto no clique
+direito (com re-arme direto), update check a cada inicialização + banner,
+idiomas (padrão inglês), aparência, iniciar com o sistema, UI legível sobre
+Liquid Glass, ícone floco de neve (app) e floco + ampulheta (barra de menus),
+link do Sobre com UTM, git/GitHub só com a conta erickakyo.
+
+## Pendências
+
+### Bloqueiam o lançamento público
+- [ ] **Links de doação** (Erick): Payment Link no Stripe + link Pix no
+      Mercado Pago com **chave aleatória** → colar em
+      `Sources/Cooldown/AppConfig.swift` (constantes com "PREENCHER";
+      os botões ficam desabilitados até isso)
+- [ ] **Conta Apple Developer** (Erick, US$ 99/ano): sem Developer ID +
+      notarização, o Gatekeeper alerta "desenvolvedor não verificado" em
+      outras máquinas. Depois de ativa: configurar assinatura/notarização
+      no `scripts/release.sh`
+
+### v0.2.0 (primeira atualização real)
+- [ ] Incluir os links de doação e soltar a release — serve também de teste
+      de ponta a ponta do banner de atualização (0.1.0 instalada vê a 0.2.0)
+
+### Divulgação
+- [ ] Screenshot da UI no README (tirar com o painel aberto e um timer rodando)
+- [ ] Página do Cooldown no site salto.solutions apontando para a release
+      (acessos do app já chegam com utm_source=cooldown / medium=app /
+      campaign=about no GA4)
+- [ ] Revisar texto da janela "Sobre" com os serviços reais do site
+
+### Backlog técnico (sem pressa)
+- [ ] Migrar UpdateChecker → Sparkle 2 quando houver Xcode instalado
+      (auto-update de verdade, sem abrir navegador)
+- [ ] Atalho global de teclado para abrir o painel
+- [ ] Ajuste fino do espaçamento do ícone da barra se necessário (varia por tela)
+
+### Concluídas
+- [x] Repositório GitHub público (`erickakyo/cooldown`) + release v0.1.0
+- [x] Ícone definitivo: floco de neve (gradiente azul-gelo)
+- [x] Histórico git 100% na conta erickakyo (akyo@me.com), sem coautoria
