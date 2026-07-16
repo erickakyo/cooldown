@@ -12,6 +12,12 @@ enum AppConfig {
 
     static let website = URL(string: "https://salto.solutions")!
 
+    /// Link do site com UTM: permite medir no Google Analytics quantos
+    /// acessos vieram da tela Sobre do app.
+    static let websiteFromAbout = URL(
+        string: "https://salto.solutions/?utm_source=cooldown&utm_medium=app&utm_campaign=about"
+    )!
+
     // Doações — preencher com os links reais (Stripe Payment Link / Mercado Pago).
     // Enquanto contiverem "PREENCHER", os botões ficam desabilitados na UI.
     static let stripeDonationURL = "https://donate.stripe.com/PREENCHER"

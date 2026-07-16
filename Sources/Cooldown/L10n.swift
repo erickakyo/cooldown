@@ -66,8 +66,8 @@ struct L {
     var about: String { t("Sobre o Cooldown", "About Cooldown") }
     var developedBy: String { t("Desenvolvido com ☕ por", "Developed with ☕ by") }
     var aboutText: String {
-        t("A Salto Solutions cria soluções digitais sob medida — automações com IA, apps, sites e sistemas para o seu negócio. Precisa de algo assim? Fale com a gente!",
-          "Salto Solutions builds tailor-made digital solutions — AI automations, apps, websites and systems for your business. Need something like this? Talk to us!")
+        t("A Salto Solutions cria soluções digitais sob medida: automações com IA, apps, sites e sistemas para o seu negócio. Precisa de algo assim? Fale com a gente!",
+          "Salto Solutions builds tailor-made digital solutions: AI automations, apps, websites and systems for your business. Need something like this? Talk to us!")
     }
     var visitSite: String { t("Visitar salto.solutions", "Visit salto.solutions") }
 

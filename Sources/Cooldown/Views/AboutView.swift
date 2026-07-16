@@ -37,7 +37,7 @@ struct AboutView: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     Button {
-                        NSWorkspace.shared.open(AppConfig.website)
+                        NSWorkspace.shared.open(AppConfig.websiteFromAbout)
                     } label: {
                         Label(l.visitSite, systemImage: "arrow.up.right.square")
                     }
