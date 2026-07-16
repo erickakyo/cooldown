@@ -39,7 +39,7 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current().setNotificationCategories([category])
     }
 
-    func schedule(for timer: AITimer, defaultSound: String, language: AppLanguage) {
+    func schedule(for timer: AITimer, defaultSound: String, language: AppLanguage, preAlertMinutes: Int = 0) {
         guard isAvailable, let resetDate = timer.resetDate, resetDate > Date() else { return }
         let l = L(language)
         let content = UNMutableNotificationContent()
@@ -55,12 +55,29 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         )
         let request = UNNotificationRequest(identifier: timer.id.uuidString, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
+
+        // Pré-alerta opcional ("libera em X min"), só se ainda couber na janela.
+        let preInterval = resetDate.timeIntervalSinceNow - TimeInterval(preAlertMinutes * 60)
+        if preAlertMinutes > 0, preInterval > 1 {
+            let pre = UNMutableNotificationContent()
+            pre.title = l.preAlertTitle(timer.displayName, preAlertMinutes)
+            pre.body = l.preAlertBody
+            pre.sound = .default
+            let preTrigger = UNTimeIntervalNotificationTrigger(timeInterval: preInterval, repeats: false)
+            UNUserNotificationCenter.current().add(
+                UNNotificationRequest(identifier: Self.preAlertID(timer.id), content: pre, trigger: preTrigger)
+            )
+        }
     }
 
     func cancel(timerID: UUID) {
         guard isAvailable else { return }
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [timerID.uuidString])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(
+            withIdentifiers: [timerID.uuidString, Self.preAlertID(timerID)]
+        )
     }
+
+    nonisolated private static func preAlertID(_ id: UUID) -> String { "\(id.uuidString)-pre" }
 
     // MARK: - UNUserNotificationCenterDelegate
 

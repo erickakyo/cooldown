@@ -113,11 +113,20 @@ final class TimerStore: ObservableObject {
 
     // MARK: - Persistence
 
+    /// Reagenda os alertas de todos os timers ativos (ex.: mudou o pré-alerta).
+    func rescheduleAll() {
+        for timer in timers where timer.state == .running {
+            NotificationService.shared.cancel(timerID: timer.id)
+            scheduleAlert(for: timer)
+        }
+    }
+
     private func scheduleAlert(for timer: AITimer) {
         NotificationService.shared.schedule(
             for: timer,
             defaultSound: settings.defaultSoundName,
-            language: settings.language
+            language: settings.language,
+            preAlertMinutes: settings.preAlertMinutes
         )
     }
 

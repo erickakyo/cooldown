@@ -1,6 +1,6 @@
-# ⏳ Cooldown
+# ⏳ Cooldown — AI Limit Timer for Claude, ChatGPT & Gemini
 
-**Know the moment your AI is back.**
+**Your AI is napping. We'll tell you when it wakes up.**
 
 Cooldown is a lightweight macOS menu bar app that alerts you — with a sound and a notification — the moment your AI usage limit resets. Stop guessing when Claude's 5-hour window is over: set it once, get pinged, and go back to work.
 

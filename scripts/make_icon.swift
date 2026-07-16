@@ -20,33 +20,37 @@ func drawIcon(size: CGFloat) -> NSImage {
     let radius = rect.width * 0.225
     let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
 
+    // Gradiente azul-gelo: "cooldown" = esfriar (trocadilho da marca)
     let gradient = NSGradient(colors: [
-        NSColor(calibratedRed: 0.18, green: 0.32, blue: 0.95, alpha: 1),
-        NSColor(calibratedRed: 0.45, green: 0.20, blue: 0.90, alpha: 1),
+        NSColor(calibratedRed: 0.15, green: 0.65, blue: 0.95, alpha: 1),
+        NSColor(calibratedRed: 0.08, green: 0.25, blue: 0.65, alpha: 1),
     ])!
     gradient.draw(in: path, angle: -60)
 
-    // Ampulheta (SF Symbol) em branco
-    let symbolSize = rect.width * 0.55
-    let config = NSImage.SymbolConfiguration(pointSize: symbolSize, weight: .medium)
-    if let symbol = NSImage(systemSymbolName: "hourglass", accessibilityDescription: nil)?
-        .withSymbolConfiguration(config) {
+    func drawSymbol(_ name: String, pointSize: CGFloat, color: NSColor, dx: CGFloat, dy: CGFloat) {
+        let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .medium)
+        guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) else { return }
         let tinted = NSImage(size: symbol.size)
         tinted.lockFocus()
-        NSColor.white.set()
+        color.set()
         let bounds = NSRect(origin: .zero, size: symbol.size)
         symbol.draw(in: bounds)
         bounds.fill(using: .sourceAtop)
         tinted.unlockFocus()
-
-        let drawRect = NSRect(
-            x: rect.midX - symbol.size.width / 2,
-            y: rect.midY - symbol.size.height / 2,
+        tinted.draw(in: NSRect(
+            x: rect.midX - symbol.size.width / 2 + dx,
+            y: rect.midY - symbol.size.height / 2 + dy,
             width: symbol.size.width,
             height: symbol.size.height
-        )
-        tinted.draw(in: drawRect)
+        ))
     }
+
+    // Ampulheta branca + floco de neve ciano no canto (variação B escolhida)
+    drawSymbol("hourglass", pointSize: rect.width * 0.55, color: .white, dx: 0, dy: 0)
+    drawSymbol("snowflake", pointSize: rect.width * 0.2,
+               color: NSColor(calibratedRed: 0.75, green: 0.95, blue: 1, alpha: 1),
+               dx: rect.width * 0.28, dy: rect.width * 0.28)
 
     image.unlockFocus()
     return image

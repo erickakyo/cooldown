@@ -85,6 +85,26 @@ struct L {
     var copied: String { t("Copiado!", "Copied!") }
     var donateSoon: String { t("Links de doação em breve", "Donation links coming soon") }
 
+    // Onboarding (primeira abertura)
+    var onboardTitle: String { t("Bem-vindo ao Cooldown!", "Welcome to Cooldown!") }
+    var onboardLoginHint: String {
+        t("Ative \"Iniciar com o sistema\" para o Cooldown estar sempre de guarda quando você precisar.",
+          "Enable \"Launch at login\" so Cooldown is always on watch when you need it.")
+    }
+    var enable: String { t("Ativar", "Enable") }
+    var notNow: String { t("Agora não", "Not now") }
+
+    // Pré-alerta
+    var preAlertLabel: String { t("Pré-alerta", "Heads-up alert") }
+    var off: String { t("Desligado", "Off") }
+    func minutesBefore(_ m: Int) -> String { t("\(m) min antes", "\(m) min before") }
+    func preAlertTitle(_ name: String, _ minutes: Int) -> String {
+        t("\(name) libera em \(minutes) min ⏳", "\(name) is back in \(minutes) min ⏳")
+    }
+    var preAlertBody: String {
+        t("Vá se organizando para voltar.", "Time to wrap up what you're doing.")
+    }
+
     // Notificação
     func notificationTitle(_ name: String) -> String { t("\(name) liberado! 🎉", "\(name) is ready! 🎉") }
     var notificationBody: String { t("Seu limite resetou. Bora voltar ao trabalho!", "Your limit has reset. Back to work!") }

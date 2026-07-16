@@ -1,6 +1,6 @@
-# ⏳ Cooldown
+# ⏳ Cooldown — Timer de Limites de IA para Claude, ChatGPT e Gemini
 
-**Saiba o momento exato em que sua IA volta.**
+**Sua IA está tirando uma soneca. A gente avisa quando ela acordar.**
 
 O Cooldown é um app leve de barra de menus para macOS que te avisa — com som e notificação — no momento em que o limite de uso da sua IA reseta. Chega de adivinhar quando a janela de 5 horas do Claude acaba: configure uma vez, receba o alerta e volte ao trabalho.
 

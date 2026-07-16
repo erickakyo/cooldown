@@ -7,6 +7,7 @@ final class SettingsScreenModel: ObservableObject {
 
 struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
+    @EnvironmentObject var store: TimerStore
     @EnvironmentObject var updater: UpdateChecker
     @StateObject private var model = SettingsScreenModel()
     var onDone: () -> Void
@@ -70,6 +71,16 @@ struct SettingsView: View {
                                 Image(systemName: "play.circle")
                             }
                             .buttonStyle(.plain)
+                        }
+
+                        PillPicker(
+                            title: l.preAlertLabel,
+                            selection: $settings.preAlertMinutes,
+                            options: [(0, l.off), (5, l.minutesBefore(5)),
+                                      (10, l.minutesBefore(10)), (15, l.minutesBefore(15))]
+                        )
+                        .onChange(of: settings.preAlertMinutes) { _, _ in
+                            store.rescheduleAll()
                         }
                     }
                 }

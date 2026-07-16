@@ -142,6 +142,12 @@ struct MainScreen: View {
                     .padding(.top, 12)
             }
 
+            if !settings.hasOnboarded {
+                onboardingCard
+                    .padding(.horizontal, 12)
+                    .padding(.top, 12)
+            }
+
             if store.timers.isEmpty {
                 emptyState
             } else {
@@ -152,6 +158,32 @@ struct MainScreen: View {
                         }
                     }
                     .padding(12)
+                }
+            }
+        }
+    }
+
+    /// Primeira abertura: sugere ativar "Iniciar com o sistema" — sem isso o
+    /// app pode não estar rodando na hora em que o usuário mais precisa dele.
+    private var onboardingCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 8) {
+                Label(l.onboardTitle, systemImage: "hand.wave.fill")
+                    .font(.subheadline.weight(.semibold))
+                Text(l.onboardLoginHint)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack {
+                    Button(l.enable) {
+                        LaunchAtLogin.set(true)
+                        settings.hasOnboarded = true
+                    }
+                    .buttonStyle(GlassPillButtonStyle(prominent: true))
+                    Button(l.notNow) {
+                        settings.hasOnboarded = true
+                    }
+                    .buttonStyle(GlassPillButtonStyle())
                 }
             }
         }

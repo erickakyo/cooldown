@@ -63,6 +63,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Verifica atualizações em toda inicialização; o resultado aparece
         // como banner na tela principal e nas configurações.
         updater.check()
+
+        // Primeira abertura: mostra o popover sozinho, com o card de boas-vindas.
+        if !settings.hasOnboarded {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+                self?.openPopover()
+            }
+        }
     }
 
     private func refreshStatusItem() {
@@ -100,6 +107,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showContextMenu() {
         let l = L(settings.language)
         let menu = NSMenu()
+
+        // Ação mais frequente no caminho mais curto: re-armar timers liberados
+        // direto do menu, sem abrir o painel.
+        let readyTimers = store.timers.filter { $0.state == .ready }
+        for timer in readyTimers {
+            let title = "▶ \(l.newCycle(Self.shortDuration(timer.windowDuration))) · \(timer.displayName)"
+            let item = NSMenuItem(title: title, action: #selector(menuRearm(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = timer.id
+            menu.addItem(item)
+        }
+        if !readyTimers.isEmpty { menu.addItem(.separator()) }
+
         menu.addItem(makeItem(l.openApp, symbol: "hourglass", action: #selector(menuOpenMain)))
         menu.addItem(makeItem(l.settings, symbol: "gearshape", action: #selector(menuOpenSettings)))
         menu.addItem(makeItem(l.checkUpdates, symbol: "arrow.down.circle", action: #selector(menuCheckUpdates)))
@@ -128,6 +148,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func menuOpenAbout() { open(screen: .about) }
     @objc private func menuOpenDonate() { open(screen: .donate) }
     @objc private func menuQuit() { NSApp.terminate(nil) }
+
+    @objc private func menuRearm(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? UUID else { return }
+        store.rearm(id: id)
+    }
+
+    private static func shortDuration(_ duration: TimeInterval) -> String {
+        let h = Int(duration) / 3600
+        let m = (Int(duration) % 3600) / 60
+        if m == 0 { return "\(h)h" }
+        return h > 0 ? "\(h)h\(m)" : "\(m)min"
+    }
 
     @objc private func menuCheckUpdates() {
         updater.check()

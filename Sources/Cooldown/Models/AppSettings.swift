@@ -25,6 +25,10 @@ final class AppSettings: ObservableObject, Codable {
     @Published var appearance: AppAppearance
     @Published var defaultSoundName: String
     @Published var showCountdownInMenuBar: Bool
+    /// Minutos de antecedência do pré-alerta ("libera em X min"); 0 = desligado.
+    @Published var preAlertMinutes: Int
+    /// Primeira abertura já guiada (popover automático + dica de login item).
+    @Published var hasOnboarded: Bool
 
     static let defaultsKey = "cooldown.settings"
 
@@ -34,10 +38,13 @@ final class AppSettings: ObservableObject, Codable {
         appearance = .system
         defaultSoundName = "Glass"
         showCountdownInMenuBar = true
+        preAlertMinutes = 0
+        hasOnboarded = false
     }
 
     enum CodingKeys: CodingKey {
-        case language, appearance, defaultSoundName, showCountdownInMenuBar
+        case language, appearance, defaultSoundName, showCountdownInMenuBar,
+             preAlertMinutes, hasOnboarded
     }
 
     convenience init(from decoder: Decoder) throws {
@@ -47,6 +54,8 @@ final class AppSettings: ObservableObject, Codable {
         appearance = try c.decodeIfPresent(AppAppearance.self, forKey: .appearance) ?? appearance
         defaultSoundName = try c.decodeIfPresent(String.self, forKey: .defaultSoundName) ?? defaultSoundName
         showCountdownInMenuBar = try c.decodeIfPresent(Bool.self, forKey: .showCountdownInMenuBar) ?? showCountdownInMenuBar
+        preAlertMinutes = try c.decodeIfPresent(Int.self, forKey: .preAlertMinutes) ?? preAlertMinutes
+        hasOnboarded = try c.decodeIfPresent(Bool.self, forKey: .hasOnboarded) ?? hasOnboarded
     }
 
     func encode(to encoder: Encoder) throws {
@@ -55,6 +64,8 @@ final class AppSettings: ObservableObject, Codable {
         try c.encode(appearance, forKey: .appearance)
         try c.encode(defaultSoundName, forKey: .defaultSoundName)
         try c.encode(showCountdownInMenuBar, forKey: .showCountdownInMenuBar)
+        try c.encode(preAlertMinutes, forKey: .preAlertMinutes)
+        try c.encode(hasOnboarded, forKey: .hasOnboarded)
     }
 
     static func load() -> AppSettings {
