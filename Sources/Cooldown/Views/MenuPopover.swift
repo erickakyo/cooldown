@@ -53,8 +53,9 @@ struct MenuPopover: View {
                 footer
             }
         }
-        .frame(width: 340)
-        .frame(minHeight: 220, maxHeight: 480)
+        // Altura fixa: o painel do MenuBarExtra corta o conteúdo quando a
+        // altura é variável (min/max) — bug de sizing do estilo .window.
+        .frame(width: 340, height: 460)
     }
 
     private var header: some View {
@@ -141,7 +142,7 @@ struct MainScreen: View {
                     .multilineTextAlignment(.center)
             }
             .padding(24)
-            .frame(maxWidth: .infinity, minHeight: 180)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             ScrollView {
                 VStack(spacing: 8) {

@@ -38,6 +38,12 @@ atualização do app (sem backend).
 - Brasil: **Pix via Mercado Pago** (Stripe Pix ainda não liberado na conta)
 - Botões abrem o navegador; nada de pagamento in-app
 - Links em `Sources/Cooldown/AppConfig.swift` — **PENDENTE preencher**
+- Segurança: os links de doação são públicos por natureza (só permitem ENVIAR
+  dinheiro; não expõem conta nem permitem cobranças). Nunca colocar chaves de
+  API (`sk_live_...`, access token MP) no app — não são necessárias.
+- Pix: usar **chave aleatória** (ou só o link de pagamento do MP). Código
+  "copia e cola" gerado de chave CPF/e-mail/telefone expõe esse dado dentro
+  do código Pix.
 
 ## Atualizações
 
@@ -56,23 +62,18 @@ app em outras máquinas. Build local usa assinatura ad-hoc (funciona só nesta m
 Roadmap de release: repositório GitHub → conta Apple Developer → script de
 notarização + DMG → página no site → (V2) Sparkle.
 
-## GitHub (criado em 2026-07-16)
+## GitHub
 
-Repositório: `erickakyo/cooldown` — **privado** por enquanto (decisão de
-segurança do Erick, iniciante em GitHub). Antes do release público:
-1. Decidir licença (sem licença = todos os direitos reservados; código visível
-   mas ninguém pode reutilizar legalmente).
-2. Ou manter o código privado e criar um repo público só de releases
-   (`cooldown-releases`) para o update checker e os DMGs — código fechado,
-   updates funcionando.
-3. O update checker (`AppConfig.githubRepo = erickakyo/cooldown`) só funciona
-   com repo público — ajustar conforme a decisão.
+Repositório: `erickakyo/cooldown` — **público** desde 2026-07-16 (decisão do
+Erick). Sem arquivo LICENSE = todos os direitos reservados (explícito no
+README); ninguém pode reutilizar o código legalmente. Releases publicadas com
+`scripts/release.sh` (DMG + tag `vX.Y.Z`) — é o que alimenta o update checker
+do app.
 
 ## Pendências (fora do código)
 
 - [ ] Criar Payment Link no Stripe e link/código Pix no Mercado Pago → `AppConfig.swift`
-- [x] Criar repositório GitHub (`erickakyo/cooldown`, privado)
-- [ ] Decidir licença / estratégia de publicação antes do release (ver seção GitHub)
+- [x] Criar repositório GitHub (`erickakyo/cooldown`, público)
 - [ ] Conta Apple Developer p/ notarização
 - [ ] Revisar texto da janela "Sobre" com os serviços reais do site salto.solutions
 - [ ] Ícone definitivo (o atual é gerado por script: gradiente + ampulheta)
