@@ -75,10 +75,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func refreshStatusItem() {
         guard let button = statusItem?.button else { return }
         let hasReady = store.timers.contains { $0.state == .ready }
-        let symbol = hasReady ? "checkmark.circle.fill" : "hourglass"
-        button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Cooldown")
+        button.image = hasReady
+            ? NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Cooldown")
+            : Self.menuBarIcon
         button.title = store.menuBarText.map { " " + $0 } ?? ""
     }
+
+    /// Ícone da barra: floco de neve (marca) + ampulheta menor (semântica de
+    /// timer). Template image = monocromático, adapta ao tema da barra.
+    private static let menuBarIcon: NSImage = {
+        let size = NSSize(width: 22, height: 16)
+        let image = NSImage(size: size)
+        image.lockFocus()
+
+        func draw(_ name: String, pointSize: CGFloat, x: CGFloat, y: CGFloat) {
+            let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .regular)
+            guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+                .withSymbolConfiguration(config) else { return }
+            symbol.draw(
+                in: NSRect(x: x, y: y, width: symbol.size.width, height: symbol.size.height),
+                from: .zero, operation: .sourceOver, fraction: 1
+            )
+        }
+
+        draw("snowflake", pointSize: 13, x: 0, y: 1)
+        draw("hourglass", pointSize: 8.5, x: 15, y: 0.5)
+
+        image.unlockFocus()
+        image.isTemplate = true
+        return image
+    }()
 
     // MARK: - Cliques no ícone
 
