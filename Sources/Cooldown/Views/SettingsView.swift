@@ -7,7 +7,7 @@ final class SettingsScreenModel: ObservableObject {
 
 struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
-    @StateObject private var updater = UpdateChecker()
+    @EnvironmentObject var updater: UpdateChecker
     @StateObject private var model = SettingsScreenModel()
     var onDone: () -> Void
 

@@ -14,6 +14,7 @@ struct L {
     var ready: String { t("Liberado!", "Ready!") }
     var idle: String { t("Parado", "Stopped") }
     var quit: String { t("Sair do Cooldown", "Quit Cooldown") }
+    var openApp: String { t("Abrir Cooldown", "Open Cooldown") }
 
     // Ações do timer
     func newCycle(_ duration: String) -> String { t("Novo ciclo (\(duration))", "New cycle (\(duration))") }

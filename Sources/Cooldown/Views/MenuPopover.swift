@@ -8,8 +8,9 @@ enum Screen: Equatable {
     case donate
 }
 
-/// Navegação interna do popover. (Classe em vez de @State porque o plugin
-/// de macros do SwiftUI não existe nas Command Line Tools.)
+/// Navegação do popover — compartilhada com o AppDelegate para o menu de
+/// contexto do ícone poder abrir telas específicas. (Classe em vez de @State
+/// porque o plugin de macros do SwiftUI não existe nas Command Line Tools.)
 final class NavModel: ObservableObject {
     @Published var screen: Screen = .main
 }
@@ -18,7 +19,7 @@ final class NavModel: ObservableObject {
 struct MenuPopover: View {
     @EnvironmentObject var store: TimerStore
     @EnvironmentObject var settings: AppSettings
-    @StateObject private var nav = NavModel()
+    @EnvironmentObject var nav: NavModel
 
     private var screen: Screen {
         get { nav.screen }
@@ -48,10 +49,8 @@ struct MenuPopover: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
-            if screen == .main {
-                Divider().opacity(0.4)
-                footer
-            }
+            Divider().opacity(0.4)
+            footer
         }
         // Altura fixa: o painel do MenuBarExtra corta o conteúdo quando a
         // altura é variável (min/max) — bug de sizing do estilo .window.
@@ -102,59 +101,89 @@ struct MenuPopover: View {
 
     private var footer: some View {
         HStack(spacing: 14) {
-            footerButton("gearshape", l.settings) { screen = .settings }
-            footerButton("cup.and.saucer.fill", l.donate) { screen = .donate }
-            footerButton("info.circle", l.about) { screen = .about }
+            footerButton("gearshape", l.settings, active: screen == .settings) { screen = .settings }
+            footerButton("cup.and.saucer.fill", l.donate, active: screen == .donate) { screen = .donate }
+            footerButton("info.circle", l.about, active: screen == .about) { screen = .about }
             Spacer()
-            footerButton("power", l.quit) { NSApp.terminate(nil) }
+            footerButton("power", l.quit, active: false) { NSApp.terminate(nil) }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
     }
 
-    private func footerButton(_ symbol: String, _ help: String, action: @escaping () -> Void) -> some View {
+    private func footerButton(
+        _ symbol: String, _ help: String, active: Bool, action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 14))
                 .frame(width: 22, height: 22)
         }
         .buttonStyle(.plain)
-        .foregroundStyle(.secondary)
+        .foregroundStyle(active ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
         .help(help)
     }
 }
 
-/// Tela principal: lista de timers.
+/// Tela principal: banner de atualização + lista de timers.
 struct MainScreen: View {
     @EnvironmentObject var store: TimerStore
     @EnvironmentObject var settings: AppSettings
+    @EnvironmentObject var updater: UpdateChecker
     @Binding var screen: Screen
 
     private var l: L { L(settings.language) }
 
     var body: some View {
-        if store.timers.isEmpty {
-            VStack(spacing: 8) {
-                Image(systemName: "hourglass.bottomhalf.filled")
-                    .font(.system(size: 34))
-                    .foregroundStyle(.tertiary)
-                Text(l.noTimers).font(.headline)
-                Text(l.noTimersHint)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+        VStack(spacing: 0) {
+            if case .available(let version) = updater.status {
+                updateBanner(version)
+                    .padding(.horizontal, 12)
+                    .padding(.top, 12)
             }
-            .padding(24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            ScrollView {
-                VStack(spacing: 8) {
-                    ForEach(store.timers) { timer in
-                        TimerRowView(timer: timer) { screen = .editor(timer) }
+
+            if store.timers.isEmpty {
+                emptyState
+            } else {
+                ScrollView {
+                    VStack(spacing: 8) {
+                        ForEach(store.timers) { timer in
+                            TimerRowView(timer: timer) { screen = .editor(timer) }
+                        }
                     }
+                    .padding(12)
                 }
-                .padding(12)
             }
         }
+    }
+
+    private func updateBanner(_ version: String) -> some View {
+        GlassCard {
+            HStack {
+                Label(l.updateAvailable(version), systemImage: "arrow.down.circle.fill")
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+                Spacer()
+                Button(l.download) {
+                    NSWorkspace.shared.open(AppConfig.releasesPageURL)
+                }
+                .buttonStyle(GlassPillButtonStyle(prominent: true))
+            }
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "hourglass.bottomhalf.filled")
+                .font(.system(size: 34))
+                .foregroundStyle(.tertiary)
+            Text(l.noTimers).font(.headline)
+            Text(l.noTimersHint)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
