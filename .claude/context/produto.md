@@ -75,9 +75,25 @@ README); ninguém pode reutilizar o código legalmente. Releases publicadas com
 `scripts/release.sh` (DMG + tag `vX.Y.Z`) — é o que alimenta o update checker
 do app.
 
-## Estado atual (2026-07-16)
+## Analytics — decisão (2026-07-17)
 
-v0.1.0 publicada (código + release com DMG no GitHub). Implementado e testado:
+**Zero telemetria no app** — o README promete "no telemetry, no data ever
+leaves your machine" e isso é argumento de venda. Medição de uso:
+`scripts/stats.sh` (downloads por release + tráfego do repo via API do
+GitHub) e GA4 do site (o botão Sobre já manda utm_source=cooldown).
+Se um dia precisar de dados de uso reais: TelemetryDeck (anônimo, SDK
+Swift, grátis até 100k sinais/mês) + atualizar README + toggle opt-out.
+
+## Estado atual (2026-07-17)
+
+**v1.0.0 lançada.** Ciclo 0.1.x validou de ponta a ponta: instalação por
+código-fonte (`build.sh --install`), DMG e Homebrew (tap `erickakyo/tap`,
+cask com `uninstall quit`); atualização com banner + "Baixar e Sair",
+re-checagem a cada 24h, one-liner de upgrade no README. Gatekeeper segue
+exigindo "Abrir Mesmo Assim" até a notarização. READMEs com imagens
+(mockups HTML em docs/mockups, regeneráveis via Chrome headless).
+
+Histórico v0.1.0 (2026-07-16). Implementado e testado:
 timers múltiplos com presets (Claude/Codex/ChatGPT/Antigravity/Gemini/custom),
 notificação com re-arme em 1 clique, auto-repetição opcional, pré-alerta
 (5/10/15 min), onboarding na primeira abertura, menu de contexto no clique
@@ -94,12 +110,7 @@ link do Sobre com UTM, git/GitHub só com a conta erickakyo.
       outras máquinas. Depois de ativa: configurar assinatura/notarização
       no `scripts/release.sh`
 
-### v0.2.0 (primeira atualização real)
-- [ ] Incluir os links de doação e soltar a release — serve também de teste
-      de ponta a ponta do banner de atualização (0.1.0 instalada vê a 0.2.0)
-
 ### Divulgação
-- [ ] Screenshot da UI no README (tirar com o painel aberto e um timer rodando)
 - [ ] Página do Cooldown no site salto.solutions apontando para a release
       (acessos do app já chegam com utm_source=cooldown / medium=app /
       campaign=about no GA4)
