@@ -7,8 +7,11 @@ struct CooldownApp: App {
 
     var body: some Scene {
         // Todo o app vive no NSStatusItem do AppDelegate; o SwiftUI só exige
-        // uma Scene válida.
-        Settings { EmptyView() }
+        // uma Scene válida. Não usar Settings{} aqui: o macOS abre essa janela
+        // vazia ("Ajustes de Cooldown") sozinho no lançamento, e fechá-la via
+        // NSApp.windows quebra o popover do NSStatusItem. Um MenuBarExtra
+        // nunca-inserido satisfaz o protocolo sem criar janela nenhuma.
+        MenuBarExtra("Cooldown", isInserted: .constant(false)) { EmptyView() }
     }
 }
 
@@ -60,6 +63,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .store(in: &observers)
         refreshStatusItem()
 
+        // O popover é criado uma única vez e reaproveitado — seu
+        // NSVisualEffectView/Liquid Glass não recalcula a aparência sozinho
+        // quando NSApp.appearance muda depois, então propaga direto pra view.
+        settings.$appearance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] appearance in
+                self?.popover.contentViewController?.view.appearance = appearance.nsAppearance
+            }
+            .store(in: &observers)
+
         // Verifica atualizações em toda inicialização; o resultado aparece
         // como banner na tela principal e nas configurações.
         updater.check()
@@ -74,33 +87,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func refreshStatusItem() {
         guard let button = statusItem?.button else { return }
-        let hasReady = store.timers.contains { $0.state == .ready }
-        button.image = hasReady
-            ? NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Cooldown")
-            : Self.menuBarIcon
+        // Ampulheta só aparece quando há algo de fato cronometrando; sem
+        // nenhum timer configurado, mostra só a marca (floco de neve).
+        button.image = store.timers.isEmpty ? Self.snowflakeOnlyIcon : Self.menuBarIcon
         button.title = store.menuBarText.map { " " + $0 } ?? ""
     }
 
-    /// Ícone da barra: floco de neve (marca) + ampulheta menor (semântica de
-    /// timer). Template image = monocromático, adapta ao tema da barra.
+    private static func drawSymbol(_ name: String, pointSize: CGFloat, x: CGFloat, y: CGFloat) {
+        let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .regular)
+        guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) else { return }
+        symbol.draw(
+            in: NSRect(x: x, y: y, width: symbol.size.width, height: symbol.size.height),
+            from: .zero, operation: .sourceOver, fraction: 1
+        )
+    }
+
+    /// Ícone da barra sem nenhum timer configurado: só o floco de neve (marca).
+    /// Template image = monocromático, adapta ao tema da barra.
+    private static let snowflakeOnlyIcon: NSImage = {
+        let size = NSSize(width: 16, height: 16)
+        let image = NSImage(size: size)
+        image.lockFocus()
+        drawSymbol("snowflake", pointSize: 13, x: 1.5, y: 1)
+        image.unlockFocus()
+        image.isTemplate = true
+        return image
+    }()
+
+    /// Ícone da barra com timer(s) configurado(s): floco de neve (marca) +
+    /// ampulheta menor (semântica de timer).
     private static let menuBarIcon: NSImage = {
         let size = NSSize(width: 22, height: 16)
         let image = NSImage(size: size)
         image.lockFocus()
-
-        func draw(_ name: String, pointSize: CGFloat, x: CGFloat, y: CGFloat) {
-            let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .regular)
-            guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-                .withSymbolConfiguration(config) else { return }
-            symbol.draw(
-                in: NSRect(x: x, y: y, width: symbol.size.width, height: symbol.size.height),
-                from: .zero, operation: .sourceOver, fraction: 1
-            )
-        }
-
-        draw("snowflake", pointSize: 13, x: 0, y: 1)
-        draw("hourglass", pointSize: 8.5, x: 15, y: 0.5)
-
+        drawSymbol("snowflake", pointSize: 13, x: 0, y: 1)
+        drawSymbol("hourglass", pointSize: 8.5, x: 15, y: 0.5)
         image.unlockFocus()
         image.isTemplate = true
         return image

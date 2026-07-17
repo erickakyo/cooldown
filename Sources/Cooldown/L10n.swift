@@ -64,6 +64,10 @@ struct L {
 
     // Sobre
     var about: String { t("Sobre o Cooldown", "About Cooldown") }
+    var tagline: String {
+        t("Sua IA está tirando uma soneca. A gente avisa quando ela acordar.",
+          "Your AI is napping. We'll tell you when it wakes up.")
+    }
     var developedBy: String { t("Desenvolvido com ☕ por", "Developed with ☕ by") }
     var aboutText: String {
         t("A Salto Solutions cria soluções digitais sob medida: automações com IA, apps, sites e sistemas para o seu negócio. Precisa de algo assim? Fale com a gente!",
@@ -73,17 +77,23 @@ struct L {
 
     // Doações
     // Mantido em inglês nos dois idiomas — "Buy me a coffee" é o termo
-    // consagrado para doação em apps indie.
-    var donate: String { "Buy me a coffee ☕" }
+    // consagrado para doação em apps indie. Sem emoji: no menu de contexto
+    // o ☕ aparecia como um segundo ícone à direita do texto.
+    var donate: String { "Buy me a coffee" }
     var donateSubtitle: String {
         t("O Cooldown é gratuito. Se ele te ajuda, um cafezinho mantém as atualizações vindo. 💙",
           "Cooldown is free. If it helps you, a coffee keeps the updates coming. 💙")
     }
     var donateCard: String { t("Doar com cartão (Stripe)", "Donate with card (Stripe)") }
     var donatePix: String { t("Doar via Pix (Mercado Pago)", "Donate via Pix (Mercado Pago)") }
-    var copyPix: String { t("Copiar código Pix", "Copy Pix code") }
+    var pixKeyLabel: String { t("Ou copie a chave Pix (aleatória):", "Or copy the Pix key (random):") }
+    var copyPix: String { t("Copiar chave Pix", "Copy Pix key") }
     var copied: String { t("Copiado!", "Copied!") }
     var donateSoon: String { t("Links de doação em breve", "Donation links coming soon") }
+    var donateThanks: String {
+        t("Qualquer valor ajuda a manter o projeto vivo. Obrigado! 💙",
+          "Every bit helps keep the project alive. Thank you! 💙")
+    }
 
     // Onboarding (primeira abertura)
     var onboardTitle: String { t("Bem-vindo ao Cooldown!", "Welcome to Cooldown!") }

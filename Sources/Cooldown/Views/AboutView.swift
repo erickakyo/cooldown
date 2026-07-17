@@ -7,46 +7,64 @@ struct AboutView: View {
     private var l: L { L(settings.language) }
 
     var body: some View {
-        VStack(spacing: 14) {
-            Image(systemName: "hourglass.circle.fill")
-                .font(.system(size: 52))
-                .foregroundStyle(.tint)
-                .padding(.top, 8)
+        ScrollView {
+            VStack(spacing: 14) {
+                // Hero: ícone real do app + nome + versão + tagline
+                AppIconGlyph(size: 68)
+                    .shadow(color: Color(red: 0.08, green: 0.25, blue: 0.65).opacity(0.35),
+                            radius: 10, y: 4)
+                    .padding(.top, 16)
 
-            VStack(spacing: 2) {
-                Text(AppConfig.appName)
-                    .font(.title2.weight(.bold))
-                Text("v\(AppConfig.version)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+                VStack(spacing: 6) {
+                    Text(AppConfig.appName)
+                        .font(.title2.weight(.bold))
 
-            GlassCard {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 4) {
-                        Text(l.developedBy)
-                            .foregroundStyle(.secondary)
-                        Text("Salto Solutions")
-                            .fontWeight(.semibold)
-                    }
-                    .font(.callout)
+                    Text("v\(AppConfig.version)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 2.5)
+                        .background(Capsule().fill(.quaternary))
 
-                    Text(l.aboutText)
+                    Text(l.tagline)
                         .font(.callout)
                         .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Button {
-                        NSWorkspace.shared.open(AppConfig.websiteFromAbout)
-                    } label: {
-                        Label(l.visitSite, systemImage: "arrow.up.right.square")
-                    }
-                    .buttonStyle(GlassPillButtonStyle(prominent: true))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 28)
+                        .padding(.top, 4)
                 }
-            }
-            .padding(.horizontal, 14)
 
-            Spacer(minLength: 12)
+                GlassCard {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack(spacing: 4) {
+                            Text(l.developedBy)
+                                .foregroundStyle(.secondary)
+                            Text("Salto Solutions")
+                                .fontWeight(.semibold)
+                        }
+                        .font(.callout)
+
+                        Text(l.aboutText)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Button {
+                            NSWorkspace.shared.open(AppConfig.websiteFromAbout)
+                        } label: {
+                            Label(l.visitSite, systemImage: "arrow.up.right.square")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(GlassPillButtonStyle(prominent: true))
+                    }
+                }
+                .padding(.horizontal, 14)
+
+                Text("© 2026 Salto Solutions")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .padding(.bottom, 12)
+            }
         }
     }
 }

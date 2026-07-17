@@ -12,40 +12,91 @@ struct DonateView: View {
 
     private var l: L { L(settings.language) }
 
+    // Tons de café, para o hero desta tela ter identidade própria
+    // (o azul-gelo fica com a marca; doação é quente e acolhedora).
+    private static let coffeeLight = Color(red: 0.93, green: 0.58, blue: 0.22)
+    private static let coffeeDark = Color(red: 0.52, green: 0.28, blue: 0.10)
+
     var body: some View {
-        VStack(spacing: 14) {
-            Image(systemName: "cup.and.saucer.fill")
-                .font(.system(size: 44))
-                .foregroundStyle(.tint)
-                .padding(.top, 8)
+        ScrollView {
+            VStack(spacing: 14) {
+                // Hero: xícara sobre gradiente quente, mesmo formato do ícone do app
+                RoundedRectangle(cornerRadius: 68 * 0.225, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Self.coffeeLight, Self.coffeeDark],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 68, height: 68)
+                    .overlay(
+                        Image(systemName: "cup.and.saucer.fill")
+                            .font(.system(size: 32, weight: .medium))
+                            .foregroundStyle(.white)
+                    )
+                    .shadow(color: Self.coffeeDark.opacity(0.35), radius: 10, y: 4)
+                    .padding(.top, 16)
 
-            Text(l.donateSubtitle)
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
+                Text(l.donateSubtitle)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 28)
 
-            GlassCard {
-                VStack(spacing: 10) {
-                    // Brasil primeiro quando o idioma é PT; cartão primeiro em EN.
-                    if settings.language == .pt {
-                        pixButtons
-                        cardButton
-                    } else {
-                        cardButton
-                        pixButtons
+                GlassCard {
+                    VStack(spacing: 10) {
+                        // Brasil primeiro quando o idioma é PT; cartão primeiro em EN.
+                        if settings.language == .pt {
+                            pixButton
+                            cardButton
+                        } else {
+                            cardButton
+                            pixButton
+                        }
+                        if allPlaceholders {
+                            Text(l.donateSoon)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    if allPlaceholders {
-                        Text(l.donateSoon)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
-            }
-            .padding(.horizontal, 14)
+                .padding(.horizontal, 14)
 
-            Spacer(minLength: 12)
+                if !AppConfig.isPlaceholder(AppConfig.pixCopyPasteCode) {
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(l.pixKeyLabel)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            HStack(spacing: 8) {
+                                Text(AppConfig.pixCopyPasteCode)
+                                    .font(.caption.monospaced())
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                                    .foregroundStyle(.secondary)
+                                Spacer(minLength: 4)
+                                Button {
+                                    copyPixKey()
+                                } label: {
+                                    Label(feedback.copied ? l.copied : l.copyPix,
+                                          systemImage: feedback.copied ? "checkmark" : "doc.on.doc")
+                                }
+                                .buttonStyle(GlassPillButtonStyle())
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                }
+
+                Text(l.donateThanks)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 12)
+            }
         }
     }
 
@@ -62,8 +113,7 @@ struct DonateView: View {
         .disabled(AppConfig.isPlaceholder(AppConfig.stripeDonationURL))
     }
 
-    @ViewBuilder
-    private var pixButtons: some View {
+    private var pixButton: some View {
         Button {
             if let url = URL(string: AppConfig.mercadoPagoDonationURL) {
                 NSWorkspace.shared.open(url)
@@ -74,21 +124,14 @@ struct DonateView: View {
         }
         .buttonStyle(GlassPillButtonStyle(prominent: settings.language == .pt))
         .disabled(AppConfig.isPlaceholder(AppConfig.mercadoPagoDonationURL))
+    }
 
-        if !AppConfig.isPlaceholder(AppConfig.pixCopyPasteCode) {
-            Button {
-                NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(AppConfig.pixCopyPasteCode, forType: .string)
-                feedback.copied = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak feedback] in
-                    feedback?.copied = false
-                }
-            } label: {
-                Label(feedback.copied ? l.copied : l.copyPix,
-                      systemImage: feedback.copied ? "checkmark" : "doc.on.doc")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(GlassPillButtonStyle())
+    private func copyPixKey() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(AppConfig.pixCopyPasteCode, forType: .string)
+        feedback.copied = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak feedback] in
+            feedback?.copied = false
         }
     }
 

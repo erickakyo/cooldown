@@ -89,10 +89,6 @@ link do Sobre com UTM, git/GitHub só com a conta erickakyo.
 ## Pendências
 
 ### Bloqueiam o lançamento público
-- [ ] **Links de doação** (Erick): Payment Link no Stripe + link Pix no
-      Mercado Pago com **chave aleatória** → colar em
-      `Sources/Cooldown/AppConfig.swift` (constantes com "PREENCHER";
-      os botões ficam desabilitados até isso)
 - [ ] **Conta Apple Developer** (Erick, US$ 99/ano): sem Developer ID +
       notarização, o Gatekeeper alerta "desenvolvedor não verificado" em
       outras máquinas. Depois de ativa: configurar assinatura/notarização
@@ -119,3 +115,7 @@ link do Sobre com UTM, git/GitHub só com a conta erickakyo.
 - [x] Repositório GitHub público (`erickakyo/cooldown`) + release v0.1.0
 - [x] Ícone definitivo: floco de neve (gradiente azul-gelo)
 - [x] Histórico git 100% na conta erickakyo (akyo@me.com), sem coautoria
+- [x] Links de doação preenchidos em `AppConfig.swift` (2026-07-16): Stripe
+      Payment Link fixo R$ 2,99, link Pix Mercado Pago, chave Pix aleatória
+      (UUID) para o botão "copiar código Pix" — copia só a chave, usuário
+      digita o valor manualmente no app do banco

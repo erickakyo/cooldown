@@ -20,9 +20,9 @@ enum AppConfig {
 
     // Doações — preencher com os links reais (Stripe Payment Link / Mercado Pago).
     // Enquanto contiverem "PREENCHER", os botões ficam desabilitados na UI.
-    static let stripeDonationURL = "https://donate.stripe.com/PREENCHER"
-    static let mercadoPagoDonationURL = "https://link.mercadopago.com.br/PREENCHER"
-    static let pixCopyPasteCode = "PREENCHER"
+    static let stripeDonationURL = "https://buy.stripe.com/28EdR25Jsffg3pu3zYd7q00"
+    static let mercadoPagoDonationURL = "https://link.mercadopago.com.br/cooldown"
+    static let pixCopyPasteCode = "499817ae-9dcd-4bc4-96df-67bbef4a96f6"
 
     // Checagem de atualização via GitHub Releases (owner/repo).
     // Nota: o update checker só funciona quando o repositório for público.

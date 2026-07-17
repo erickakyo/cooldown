@@ -70,8 +70,7 @@ struct MenuPopover: View {
                 }
                 .buttonStyle(.plain)
             }
-            Image(systemName: "hourglass")
-                .foregroundStyle(.tint)
+            AppIconGlyph(size: 20)
             Text(headerTitle)
                 .font(.headline)
             Spacer()
