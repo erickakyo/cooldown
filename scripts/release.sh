@@ -28,9 +28,13 @@ gh release create "v$VERSION" "$DMG" \
   --title "Cooldown v$VERSION" \
   --notes "⏳ Cooldown v$VERSION — menu bar app that alerts you when your AI usage limit resets.
 
-**Install:** download the DMG, drag Cooldown to Applications, allow notifications on first launch — or \`brew install --cask erickakyo/tap/cooldown\`.
-**Updating from a previous version:** see [How to update](https://github.com/erickakyo/cooldown#updating) · [Como atualizar](https://github.com/erickakyo/cooldown/blob/main/README.pt-BR.md#atualização).
+**Install (Homebrew, one command — installs, clears Gatekeeper and opens):**
+\`\`\`bash
+brew install --cask erickakyo/tap/cooldown && xattr -dr com.apple.quarantine /Applications/Cooldown.app && open /Applications/Cooldown.app
+\`\`\`
+**Install (DMG):** download below, drag Cooldown to Applications, allow notifications on first launch.
+**Updating from a previous version:** [How to update](https://github.com/erickakyo/cooldown#updating) · [Como atualizar](https://github.com/erickakyo/cooldown/blob/main/README.pt-BR.md#atualização)
 
-> ⚠️ This build is not notarized yet — macOS may warn on first open (right-click → Open)."
+> ⚠️ Not notarized by Apple yet — macOS blocks the first launch of a DMG install (\"Apple could not verify…\"). Click **OK**, then **System Settings → Privacy & Security → Open Anyway**. The Homebrew one-liner above already takes care of it."
 
 echo "✅ Release v$VERSION publicada"
