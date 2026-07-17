@@ -38,10 +38,13 @@ brew install --cask erickakyo/tap/cooldown
 
 Baixe o `Cooldown-x.y.z.dmg` mais recente em [Releases](../../releases), arraste para Aplicativos e permita as notificações na primeira abertura.
 
-> **Nota:** o Cooldown ainda não é notarizado pela Apple, então o macOS bloqueia a primeira abertura de uma cópia baixada ("A Apple não pôde verificar…"). Clique em **OK** (não em "Mover para o Lixo") e vá em **Ajustes do Sistema → Privacidade e Segurança**, role até o final e clique em **Abrir Mesmo Assim**. Ou, no Terminal:
-> ```bash
-> xattr -dr com.apple.quarantine /Applications/Cooldown.app
-> ```
+### Primeira abertura ("A Apple não pôde verificar…")
+
+O Cooldown ainda não é notarizado pela Apple, então o macOS bloqueia a primeira abertura **independente do método de instalação** (Homebrew ou DMG). Clique em **OK** (não em "Mover para o Lixo") e vá em **Ajustes do Sistema → Privacidade e Segurança**, role até o final e clique em **Abrir Mesmo Assim**. Ou, no Terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Cooldown.app
+```
 
 ## Atualização
 
