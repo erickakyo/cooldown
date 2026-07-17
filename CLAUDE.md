@@ -40,3 +40,8 @@ scripts/build.sh --run    # idem + relança o app
   (já feito em `SoundService`) — é onde o UN procura sons customizados.
 - Links de doação/repositório em `AppConfig.swift`; placeholders contêm
   "PREENCHER" e desabilitam os botões na UI.
+- **Recursos e Ícones de Serviços (PNGs):** Os logotipos reais dos serviços (Claude, ChatGPT, Gemini, Codex, Antigravity, Custom) estão em `_assets/` como PNGs transparentes e são copiados para a pasta de recursos do aplicativo pelo `build.sh`. São renderizados com `.renderingMode(.template)` e `.foregroundStyle(.primary)` para serem pretos em modo claro e brancos em modo escuro.
+- **Problema do Espaço (Spacebar Bug):** o popover em modo transiente fechava
+  ao digitar espaço num campo de texto. Não é foco/teclado — é um clique real
+  de mouse. Diagnóstico completo e correção: `.claude/context/produto.md`
+  (seção "Spacebar Bug — causa raiz").

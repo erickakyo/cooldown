@@ -1,5 +1,5 @@
 #!/usr/bin/env swift
-// Gera o AppIcon.icns do Cooldown: gradiente arredondado + ampulheta.
+// Gera o AppIcon.icns do Cooldown a partir do arquivo PNG de origem.
 // Uso: swift scripts/make_icon.swift <saida.icns>
 
 import AppKit
@@ -10,45 +10,18 @@ let tmpDir = FileManager.default.temporaryDirectory
 try? FileManager.default.removeItem(at: tmpDir)
 try! FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
 
-func drawIcon(size: CGFloat) -> NSImage {
+// Carrega o ícone original da pasta _assets
+let currentDir = FileManager.default.currentDirectoryPath
+let sourcePath = currentDir + "/_assets/macos - icon - cooldown.png"
+guard let sourceImage = NSImage(contentsOfFile: sourcePath) else {
+    print("Erro: não foi possível carregar o ícone de origem em \(sourcePath)")
+    exit(1)
+}
+
+func resizeIcon(size: CGFloat) -> NSImage {
     let image = NSImage(size: NSSize(width: size, height: size))
     image.lockFocus()
-
-    // macOS: o ícone ocupa ~80% do canvas com cantos arredondados
-    let inset = size * 0.1
-    let rect = NSRect(x: inset, y: inset, width: size - inset * 2, height: size - inset * 2)
-    let radius = rect.width * 0.225
-    let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
-
-    // Gradiente azul-gelo: "cooldown" = esfriar (trocadilho da marca)
-    let gradient = NSGradient(colors: [
-        NSColor(calibratedRed: 0.15, green: 0.65, blue: 0.95, alpha: 1),
-        NSColor(calibratedRed: 0.08, green: 0.25, blue: 0.65, alpha: 1),
-    ])!
-    gradient.draw(in: path, angle: -60)
-
-    func drawSymbol(_ name: String, pointSize: CGFloat, color: NSColor, dx: CGFloat, dy: CGFloat) {
-        let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .medium)
-        guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-            .withSymbolConfiguration(config) else { return }
-        let tinted = NSImage(size: symbol.size)
-        tinted.lockFocus()
-        color.set()
-        let bounds = NSRect(origin: .zero, size: symbol.size)
-        symbol.draw(in: bounds)
-        bounds.fill(using: .sourceAtop)
-        tinted.unlockFocus()
-        tinted.draw(in: NSRect(
-            x: rect.midX - symbol.size.width / 2 + dx,
-            y: rect.midY - symbol.size.height / 2 + dy,
-            width: symbol.size.width,
-            height: symbol.size.height
-        ))
-    }
-
-    // Floco de neve branco centralizado (variação C escolhida pelo Erick)
-    drawSymbol("snowflake", pointSize: rect.width * 0.58, color: .white, dx: 0, dy: 0)
-
+    sourceImage.draw(in: NSRect(x: 0, y: 0, width: size, height: size), from: .zero, operation: .sourceOver, fraction: 1)
     image.unlockFocus()
     return image
 }
@@ -68,9 +41,9 @@ func savePNG(_ image: NSImage, pixels: Int, name: String) {
 }
 
 for size in [16, 32, 128, 256, 512] {
-    let img = drawIcon(size: CGFloat(size))
+    let img = resizeIcon(size: CGFloat(size))
     savePNG(img, pixels: size, name: "icon_\(size)x\(size).png")
-    savePNG(drawIcon(size: CGFloat(size * 2)), pixels: size * 2, name: "icon_\(size)x\(size)@2x.png")
+    savePNG(resizeIcon(size: CGFloat(size * 2)), pixels: size * 2, name: "icon_\(size)x\(size)@2x.png")
 }
 
 let task = Process()

@@ -28,8 +28,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
     private var observers: [AnyCancellable] = []
+    private var clickOutsideMonitor: Any?
+    private var deactivateObserver: NSObjectProtocol?
+    private var statusItemMouseMonitor: Any?
+    private var popoverKeyMonitor: Any?
+    private var lastPopoverKeyDown = Date.distantPast
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSWindow.swizzleCanBecomeKey()
         NSApp.setActivationPolicy(.accessory)
         settings.applyAppearance()
         NotificationService.shared.setup(language: settings.language)
@@ -40,16 +46,53 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .environmentObject(nav)
             .environmentObject(updater)
         popover.contentViewController = NSHostingController(rootView: root)
-        popover.contentSize = NSSize(width: 340, height: 460)
-        popover.behavior = .transient
+        popover.contentSize = NSSize(width: 340, height: 500)
+        // .applicationDefined em vez de .transient: o auto-dismiss do .transient
+        // reage a QUALQUER keyDown não tratado (inclusive a barra de espaço
+        // dentro de um TextField, ex.: nome customizado de serviço), fechando
+        // o popover no meio da digitação. Fechamos manualmente (clique fora,
+        // Esc, app perde foco) para reproduzir o mesmo comportamento sem
+        // interceptar teclas destinadas aos campos de texto.
+        popover.behavior = .applicationDefined
+        popover.delegate = self
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
             button.imagePosition = .imageLeading
             button.font = NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .regular)
-            button.target = self
-            button.action = #selector(statusItemClicked)
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+            button.refusesFirstResponder = true
+            button.setAccessibilityElement(false)
+            // Sem target/action: evita que o botão seja "clicado" pelo macOS
+            // sem mouse real (Acesso Total pelo Teclado, VoiceOver etc.).
+            // Detectamos clique real só via monitor de mouse abaixo.
+        }
+        statusItemMouseMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
+            guard let self, let button = self.statusItem.button, event.window === button.window else { return event }
+            if event.type == .rightMouseDown {
+                self.showContextMenu()
+            } else if self.popover.isShown {
+                // O cursor costuma ficar em cima do ícone logo após abri-lo;
+                // um toque acidental no trackpad (Tap to Click) bem no
+                // instante em que a mão alcança a barra de espaço registra
+                // um clique real nele, fechando o popover no meio da
+                // digitação. Ignoramos um clique no ícone que chega colado
+                // (< 500ms) a uma tecla digitada no próprio popover — clique
+                // intencional de "fechar de novo" não costuma vir tão rápido
+                // depois de uma tecla.
+                let sinceLastKey = Date().timeIntervalSince(self.lastPopoverKeyDown)
+                if sinceLastKey > 0.5 {
+                    self.popover.performClose(nil)
+                }
+            } else {
+                self.openPopover()
+            }
+            return nil
+        }
+        popoverKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            if event.window?.className.contains("Popover") == true {
+                self?.lastPopoverKeyDown = Date()
+            }
+            return event
         }
 
         // Contagem/ícone na barra acompanham o tick do store e as configurações.
@@ -104,13 +147,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
 
+    private static func drawIconFlat(in rect: NSRect) {
+        if let path = Bundle.main.path(forResource: "icon-flat", ofType: "png"),
+           let img = NSImage(contentsOfFile: path) {
+            img.isTemplate = true
+            img.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1)
+        } else {
+            drawSymbol("snowflake", pointSize: rect.height, x: rect.minX, y: rect.minY)
+        }
+    }
+
     /// Ícone da barra sem nenhum timer configurado: só o floco de neve (marca).
     /// Template image = monocromático, adapta ao tema da barra.
     private static let snowflakeOnlyIcon: NSImage = {
         let size = NSSize(width: 16, height: 16)
         let image = NSImage(size: size)
         image.lockFocus()
-        drawSymbol("snowflake", pointSize: 13, x: 1.5, y: 1)
+        drawIconFlat(in: NSRect(x: 1.5, y: 1.5, width: 13, height: 13))
         image.unlockFocus()
         image.isTemplate = true
         return image
@@ -122,7 +175,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let size = NSSize(width: 22, height: 16)
         let image = NSImage(size: size)
         image.lockFocus()
-        drawSymbol("snowflake", pointSize: 13, x: 0, y: 1)
+        drawIconFlat(in: NSRect(x: 0, y: 1.5, width: 13, height: 13))
         drawSymbol("hourglass", pointSize: 8.5, x: 15, y: 0.5)
         image.unlockFocus()
         image.isTemplate = true
@@ -131,21 +184,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Cliques no ícone
 
-    @objc private func statusItemClicked() {
-        if NSApp.currentEvent?.type == .rightMouseUp {
-            showContextMenu()
-        } else if popover.isShown {
-            popover.performClose(nil)
-        } else {
-            openPopover()
-        }
-    }
-
     private func openPopover() {
         guard let button = statusItem.button else { return }
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         NSApp.activate(ignoringOtherApps: true)
         popover.contentViewController?.view.window?.makeKey()
+        installDismissMonitors()
+    }
+
+    /// Substitui o auto-dismiss do `.transient`: fecha ao clicar fora do
+    /// popover ou ao o app perder foco (Cmd+Tab, clicar noutro app). Não
+    /// observa teclado — Esc é tratado pelos próprios botões "Cancelar"
+    /// (`.keyboardShortcut(.cancelAction)`) dentro de cada tela.
+    private func installDismissMonitors() {
+        removeDismissMonitors()
+        clickOutsideMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
+            self?.popover.performClose(nil)
+        }
+        deactivateObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didResignActiveNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.popover.performClose(nil)
+        }
+    }
+
+    private func removeDismissMonitors() {
+        if let monitor = clickOutsideMonitor {
+            NSEvent.removeMonitor(monitor)
+            clickOutsideMonitor = nil
+        }
+        if let observer = deactivateObserver {
+            NotificationCenter.default.removeObserver(observer)
+            deactivateObserver = nil
+        }
     }
 
     private func open(screen: Screen) {
@@ -177,12 +248,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.separator())
         menu.addItem(makeItem(l.quit, symbol: "power", action: #selector(menuQuit)))
 
-        // Padrão para menu de contexto em NSStatusItem: atribui o menu,
-        // dispara o clique (mostra o menu, síncrono) e remove — assim o
-        // clique esquerdo continua abrindo o popover.
-        statusItem.menu = menu
-        statusItem.button?.performClick(nil)
-        statusItem.menu = nil
+        // Sem passar por statusItem.menu/performClick (dependeria da ação do
+        // botão, que removemos de propósito): mostra o menu direto sob o ícone.
+        if let button = statusItem.button {
+            menu.popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.height + 4), in: button)
+        }
     }
 
     private func makeItem(_ title: String, symbol: String, action: Selector) -> NSMenuItem {
@@ -213,5 +283,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func menuCheckUpdates() {
         updater.check()
         open(screen: .settings)
+    }
+}
+
+extension AppDelegate: NSPopoverDelegate {
+    func popoverDidShow(_ notification: Notification) {
+        popover.contentViewController?.view.window?.makeKey()
+    }
+
+    func popoverDidClose(_ notification: Notification) {
+        removeDismissMonitors()
+    }
+}
+
+extension NSWindow {
+    static func swizzleCanBecomeKey() {
+        let originalSelector = #selector(getter: NSWindow.canBecomeKey)
+        let swizzledSelector = #selector(getter: NSWindow.customCanBecomeKey)
+        
+        guard let originalMethod = class_getInstanceMethod(NSWindow.self, originalSelector),
+              let swizzledMethod = class_getInstanceMethod(NSWindow.self, swizzledSelector) else {
+            return
+        }
+        method_exchangeImplementations(originalMethod, swizzledMethod)
+    }
+    
+    @objc var customCanBecomeKey: Bool {
+        if self.className.contains("Popover") {
+            return true
+        }
+        return self.customCanBecomeKey // Chama a implementação original
     }
 }

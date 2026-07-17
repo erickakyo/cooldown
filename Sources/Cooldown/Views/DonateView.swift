@@ -14,29 +14,31 @@ struct DonateView: View {
 
     // Tons de café, para o hero desta tela ter identidade própria
     // (o azul-gelo fica com a marca; doação é quente e acolhedora).
-    private static let coffeeLight = Color(red: 0.93, green: 0.58, blue: 0.22)
     private static let coffeeDark = Color(red: 0.52, green: 0.28, blue: 0.10)
+
+    private static let heroImage: NSImage? = {
+        guard let path = Bundle.main.path(forResource: "donation-icon-circle", ofType: "png") else { return nil }
+        return NSImage(contentsOfFile: path)
+    }()
 
     var body: some View {
         ScrollView {
             VStack(spacing: 14) {
-                // Hero: xícara sobre gradiente quente, mesmo formato do ícone do app
-                RoundedRectangle(cornerRadius: 68 * 0.225, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [Self.coffeeLight, Self.coffeeDark],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 68, height: 68)
-                    .overlay(
+                // Hero: ícone real de doação, mesmo formato do ícone do app
+                Group {
+                    if let heroImage = Self.heroImage {
+                        Image(nsImage: heroImage)
+                            .resizable()
+                            .scaledToFit()
+                    } else {
                         Image(systemName: "cup.and.saucer.fill")
                             .font(.system(size: 32, weight: .medium))
                             .foregroundStyle(.white)
-                    )
-                    .shadow(color: Self.coffeeDark.opacity(0.35), radius: 10, y: 4)
-                    .padding(.top, 16)
+                    }
+                }
+                .frame(width: 68, height: 68)
+                .shadow(color: Self.coffeeDark.opacity(0.35), radius: 10, y: 4)
+                .padding(.top, 16)
 
                 Text(l.donateSubtitle)
                     .font(.callout)

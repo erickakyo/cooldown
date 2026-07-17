@@ -32,6 +32,19 @@ if [ ! -f "$ROOT/dist/AppIcon.icns" ]; then
 fi
 cp "$ROOT/dist/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 
+# Copia recursos adicionais
+cp "$ROOT/_assets/icon-flat.png" "$APP/Contents/Resources/icon-flat.png"
+cp "$ROOT/_assets/Cooldown---Logo-circle.png" "$APP/Contents/Resources/Cooldown---Logo-circle.png"
+cp "$ROOT/_assets/claude.png" "$APP/Contents/Resources/claude.png"
+cp "$ROOT/_assets/chatgpt.png" "$APP/Contents/Resources/chatgpt.png"
+cp "$ROOT/_assets/gemini.png" "$APP/Contents/Resources/gemini.png"
+cp "$ROOT/_assets/codex.png" "$APP/Contents/Resources/codex.png"
+cp "$ROOT/_assets/antigravity.png" "$APP/Contents/Resources/antigravity.png"
+cp "$ROOT/_assets/donation-icon-circle.png" "$APP/Contents/Resources/donation-icon-circle.png"
+
+# Remove atributos extras do Finder para evitar erros na assinatura
+xattr -cr "$APP"
+
 echo "▸ Assinando (ad-hoc)…"
 codesign --force --deep --sign - "$APP"
 

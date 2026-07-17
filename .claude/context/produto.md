@@ -130,3 +130,54 @@ link do Sobre com UTM, git/GitHub só com a conta erickakyo.
       Payment Link fixo R$ 2,99, link Pix Mercado Pago, chave Pix aleatória
       (UUID) para o botão "copiar código Pix" — copia só a chave, usuário
       digita o valor manualmente no app do banco
+- [x] Logotipos monocromáticos reais para Claude, ChatGPT, Gemini, Codex e Antigravity/Custom (2026-07-17)
+- [x] Correção do Spacebar Bug (causa raiz real: toque acidental no trackpad, não foco/teclado — ver seção abaixo) (2026-07-17)
+- [x] Melhoria no botão voltar (hit target estendido com fundo circular de 24x24) e remoção dos ícones de título (2026-07-17)
+- [x] Bandeiras de idioma dessaturadas pelo vidro no dark mode: trocada a
+      renderização de `Text(emoji)` para `Image(nsImage:)` com o emoji
+      desenhado em bitmap (cache em `PillPicker.swift`) — vibrancy do glass
+      não afeta bitmaps, só texto (2026-07-17)
+
+### Spacebar Bug — causa raiz (2026-07-17)
+
+Sintoma: digitar no campo "Account" do editor de timer (ex. "Salto
+Solutions") fechava o popover assim que se apertava a barra de espaço.
+
+Hipóteses tentadas e descartadas, nessa ordem, cada uma com log de
+diagnóstico (`NSLog` + stack trace em `popoverShouldClose`/`popoverDidClose`)
+que provou a hipótese errada antes de passar pra próxima:
+1. `popover.behavior = .transient` reagindo a qualquer keyDown não tratado
+   → trocado para `.applicationDefined` + monitores manuais de dismiss.
+   Não resolveu sozinho.
+2. Acesso Total pelo Teclado / VoiceOver "clicando" no ícone da barra via
+   `sendAction`/`performClick` sem mouse real → `button.setAccessibilityElement(false)`.
+   Não resolveu sozinho.
+3. O clique ainda acontecia mesmo **sem nenhuma `action`/`target` no botão**
+   (removidos por completo, substituídos por um monitor de mouse local) —
+   provando que não era `sendAction`/`performClick`/acessibilidade.
+
+Causa raiz real (confirmada por log): a barra de espaço chegava
+**normalmente** como tecla de texto na janela certa (`_NSPopoverWindow`,
+key window). No mesmíssimo instante, um evento **genuíno de
+`NSEvent.leftMouseDown`** (não sintético, não via Accessibility API) chegava
+na janela do próprio ícone da barra de menus. Ou seja: um toque acidental no
+trackpad (Tap to Click) — a mão alcançando a barra de espaço encosta ou
+aproxima o polegar/palma do trackpad, e o cursor do mouse geralmente ainda
+está em cima do ícone (de quando o usuário clicou nele pra abrir o popover)
+— gera um clique real e indistinguível de um clique intencional.
+
+**Correção aplicada** (`CooldownApp.swift`): um monitor local de `keyDown` no
+popover grava o timestamp da última tecla digitada (`lastPopoverKeyDown`).
+O monitor de mouse do ícone da barra ignora um `leftMouseDown` que chegue a
+menos de 500ms dessa última tecla — sinal forte de toque acidental — sem
+afetar o clique intencional de "fechar de novo" clicando no ícone (que
+raramente vem tão colado a uma tecla).
+
+**Se o bug voltar:** não insista em teorias de foco/first-responder/behavior
+do NSPopover — já descartadas com prova. Comece verificando se o timestamp de
+500ms ainda é suficiente (aumentar se necessário) ou se há um caso de clique
+intencional real sendo bloqueado por engano (diminuir). O ponto de
+instrumentação mais rápido pra depurar de novo: `NSLog` em
+`popoverDidClose`/`popoverShouldClose` com `Thread.callStackSymbols`, e um
+monitor local de `.keyDown` logando `window`/`keyWindow` — reproduz o
+problema em segundos e mostra exatamente quem fechou o popover.

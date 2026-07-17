@@ -13,8 +13,7 @@ struct TimerRowView: View {
         GlassCard {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    Image(systemName: timer.symbol)
-                        .foregroundStyle(.tint)
+                    ServiceIconView(serviceID: timer.serviceID, fallbackSymbol: timer.symbol, size: 16)
                     Text(timer.displayName)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
@@ -68,7 +67,7 @@ struct TimerRowView: View {
             Spacer()
             Button(l.newCycle(shortDuration)) { store.rearm(id: timer.id) }
                 .buttonStyle(GlassPillButtonStyle(prominent: true))
-            Button(l.ok) { store.acknowledge(id: timer.id) }
+            Button(l.adjust) { onEdit() }
                 .buttonStyle(GlassPillButtonStyle())
         }
     }

@@ -5,6 +5,8 @@ import SwiftUI
 struct PillMenu<T: Hashable>: View {
     @Binding var selection: T
     let options: [(value: T, label: String)]
+    /// Emoji opcional (ex.: bandeira) mostrado antes do rótulo selecionado.
+    var glyph: ((T) -> String)? = nil
 
     var body: some View {
         Menu {
@@ -12,15 +14,23 @@ struct PillMenu<T: Hashable>: View {
                 Button {
                     selection = option.value
                 } label: {
+                    let text = glyph.map { "\($0(option.value)) \(option.label)" } ?? option.label
                     if option.value == selection {
-                        Label(option.label, systemImage: "checkmark")
+                        Label(text, systemImage: "checkmark")
                     } else {
-                        Text(option.label)
+                        Text(text)
                     }
                 }
             }
         } label: {
             HStack(spacing: 4) {
+                if let glyph {
+                    // Emoji como bitmap: o vibrancy do vidro dessatura texto
+                    // (inclusive emoji, mesmo com .compositingGroup()), mas
+                    // não imagens não-template — mantém a cor original da
+                    // bandeira nos dois modos.
+                    Image(nsImage: Self.emojiImage(glyph(selection)))
+                }
                 Text(currentLabel)
                     .lineLimit(1)
                 Image(systemName: "chevron.up.chevron.down")
@@ -41,7 +51,23 @@ struct PillMenu<T: Hashable>: View {
     private var currentLabel: String {
         options.first { $0.value == selection }?.label ?? ""
     }
+
+    private static func emojiImage(_ emoji: String) -> NSImage {
+        if let cached = emojiImageCache[emoji] { return cached }
+        let str = NSAttributedString(string: emoji, attributes: [
+            .font: NSFont.systemFont(ofSize: 13)
+        ])
+        let size = str.size()
+        let image = NSImage(size: size)
+        image.lockFocus()
+        str.draw(at: .zero)
+        image.unlockFocus()
+        emojiImageCache[emoji] = image
+        return image
+    }
 }
+
+private var emojiImageCache: [String: NSImage] = [:]
 
 /// Seletor em formato de pílula, substituindo o Picker nativo — os pop-ups
 /// do sistema ficam ilegíveis (texto branco sobre vidro claro) no macOS 26.

@@ -56,6 +56,14 @@ struct AboutView: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(GlassPillButtonStyle(prominent: true))
+
+                        Button {
+                            NSWorkspace.shared.open(AppConfig.feedbackMailto)
+                        } label: {
+                            Label(l.sendFeedback, systemImage: "envelope")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(GlassPillButtonStyle())
                     }
                 }
                 .padding(.horizontal, 14)

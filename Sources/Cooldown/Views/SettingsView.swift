@@ -26,7 +26,8 @@ struct SettingsView: View {
                         row(icon: "globe", color: .blue, title: l.languageLabel) {
                             PillMenu(
                                 selection: $settings.language,
-                                options: AppLanguage.allCases.map { ($0, "\($0.flag) \($0.label)") }
+                                options: AppLanguage.allCases.map { ($0, $0.label) },
+                                glyph: { $0.flag }
                             )
                         }
                         .onChange(of: settings.language) { _, newValue in

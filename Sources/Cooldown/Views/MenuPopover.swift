@@ -54,7 +54,12 @@ struct MenuPopover: View {
         }
         // Altura fixa: o painel do MenuBarExtra corta o conteúdo quando a
         // altura é variável (min/max) — bug de sizing do estilo .window.
-        .frame(width: 340, height: 460)
+        // 500pt = a altura que a página Sobre precisa pra não ter scroll
+        // (header 36 + divider 1 + conteúdo 415 + divider 1 + footer 38 =
+        // 491, medido via NSHostingController.sizeThatFits, + margem).
+        // Como a altura é única pra todas as telas, as demais só ganham
+        // espaço sobrando embaixo.
+        .frame(width: 340, height: 500)
         // O vidro do macOS 26 é transparente demais para leitura — este
         // material extra escurece o que está atrás do painel.
         .background(.regularMaterial)
@@ -67,10 +72,15 @@ struct MenuPopover: View {
                     screen = .main
                 } label: {
                     Image(systemName: "chevron.left")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24, height: 24)
+                        .background(Circle().fill(.quaternary))
+                        .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
+                .padding(.trailing, 4)
             }
-            AppIconGlyph(size: 20)
             Text(headerTitle)
                 .font(.headline)
             Spacer()

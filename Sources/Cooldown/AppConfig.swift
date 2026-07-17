@@ -18,6 +18,16 @@ enum AppConfig {
         string: "https://salto.solutions/?utm_source=cooldown&utm_medium=app&utm_campaign=about"
     )!
 
+    static let feedbackEmail = "contato@salto.solutions"
+
+    /// Abre o cliente de e-mail padrão com destinatário e assunto
+    /// pré-preenchidos (versão inclusa para facilitar o suporte).
+    static var feedbackMailto: URL {
+        let subject = "Sugestão — Cooldown v\(version)"
+        let encodedSubject = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? subject
+        return URL(string: "mailto:\(feedbackEmail)?subject=\(encodedSubject)")!
+    }
+
     // Doações — preencher com os links reais (Stripe Payment Link / Mercado Pago).
     // Enquanto contiverem "PREENCHER", os botões ficam desabilitados na UI.
     static let stripeDonationURL = "https://buy.stripe.com/28EdR25Jsffg3pu3zYd7q00"

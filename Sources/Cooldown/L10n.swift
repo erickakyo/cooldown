@@ -21,7 +21,6 @@ struct L {
     var adjust: String { t("Ajustar", "Adjust") }
     var stop: String { t("Parar", "Stop") }
     var delete: String { t("Excluir", "Delete") }
-    var ok: String { "OK" }
 
     // Sheet de criação/edição
     var editTimer: String { t("Ajustar timer", "Adjust timer") }
@@ -80,6 +79,7 @@ struct L {
           "Salto Solutions builds tailor-made digital solutions: AI automations, apps, websites and systems for your business. Need something like this? Talk to us!")
     }
     var visitSite: String { t("Visitar salto.solutions", "Visit salto.solutions") }
+    var sendFeedback: String { t("Enviar sugestão", "Send feedback") }
 
     // Doações
     // Mantido em inglês nos dois idiomas — "Buy me a coffee" é o termo
