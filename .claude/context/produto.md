@@ -75,6 +75,21 @@ README); ninguém pode reutilizar o código legalmente. Releases publicadas com
 `scripts/release.sh` (DMG + tag `vX.Y.Z`) — é o que alimenta o update checker
 do app.
 
+## Imagens dos READMEs (`docs/`)
+
+- `docs/hero.png`: **imagem de marketing sob medida** (`_assets/github-cooldown-hero.png`),
+  copiada direto — não é gerada a partir de mockup. **Não regenerar via
+  `docs/mockups/hero.html`** — isso substitui a imagem de marketing pelo
+  mockup fiel à UI (já aconteceu por engano em 2026-07-17, revertido na hora).
+- `docs/screens.png`: gerado a partir de `docs/mockups/gallery.html` via
+  Playwright (`deviceScaleFactor: 2`, viewport 1140x560 → PNG 2280x1120).
+  Esse mockup precisa ser mantido em sincronia manual com a UI real — depois
+  de qualquer mudança visual no popover (header, botões, ícones), atualizar
+  o HTML antes de re-renderizar. Sem script fixo; comando usado:
+  `node -e "const {chromium}=require('playwright'); ..."` com
+  `page.screenshot({ path: 'docs/screens.png' })` (Playwright instalado à parte,
+  não é dependência do projeto).
+
 ## Analytics — decisão (2026-07-17)
 
 **Zero telemetria no app** — o README promete "no telemetry, no data ever

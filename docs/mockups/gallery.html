@@ -31,26 +31,25 @@
   }
 
   .header { display: flex; align-items: center; gap: 7px; padding: 10px 14px; }
-  .appicon {
-    width: 20px; height: 20px; border-radius: 5px;
-    background: linear-gradient(135deg, #26a6f2, #1440a6);
-    display: grid; place-items: center; color: #fff; flex: none;
-  }
   .appicon-lg {
     width: 68px; height: 68px; border-radius: 15px;
     background: linear-gradient(135deg, #26a6f2, #1440a6);
     display: grid; place-items: center; color: #fff; flex: none;
     box-shadow: 0 10px 24px rgba(20,64,166,.4);
   }
-  .coffee-lg {
-    width: 68px; height: 68px; border-radius: 15px;
-    background: linear-gradient(135deg, #ed9438, #854719);
-    display: grid; place-items: center; color: #fff; flex: none;
-    box-shadow: 0 10px 24px rgba(133,71,25,.4);
+  .donate-lg {
+    width: 68px; height: 68px; border-radius: 50%;
+    flex: none; box-shadow: 0 10px 24px rgba(133,71,25,.35);
+    overflow: hidden;
   }
+  .donate-lg img { width: 100%; height: 100%; display: block; object-fit: cover; }
   .header .title { font-size: 13px; font-weight: 600; }
   .header .spacer { flex: 1; }
-  .back { color: rgba(255,255,255,.75); display: flex; }
+  .back {
+    color: rgba(255,255,255,.75); display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(255,255,255,.14); flex: none; margin-right: 2px;
+  }
 
   .pill {
     display: inline-flex; align-items: center; gap: 5px;
@@ -138,7 +137,6 @@
   <div class="popover">
     <div class="header">
       <span class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5L7 12l7.5 7.5"/></svg></span>
-      <div class="appicon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg></div>
       <span class="title">Settings</span>
       <span class="spacer"></span>
     </div>
@@ -194,7 +192,7 @@
       <div class="card">
         <div class="srow">
           <span class="ic gray"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M17.8 2.8v4h-4"/></svg></span>
-          <span class="label">Cooldown v0.1.0</span>
+          <span class="label">Cooldown v1.0</span>
           <span class="spacer"></span>
           <span class="pill">Check for updates…</span>
         </div>
@@ -218,14 +216,13 @@
   <div class="popover">
     <div class="header">
       <span class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5L7 12l7.5 7.5"/></svg></span>
-      <div class="appicon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg></div>
       <span class="title">Buy me a coffee</span>
       <span class="spacer"></span>
     </div>
     <div class="divider"></div>
     <div class="content center">
-      <div class="coffee-lg" style="margin-top:4px">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="#fff"><path d="M4 6h13v6.2A5.3 5.3 0 0 1 11.7 17.5H9.3A5.3 5.3 0 0 1 4 12.2z"/><path d="M17 8h1.6a2.7 2.7 0 0 1 0 5.4H17V11h1.4a1 1 0 0 0 0-2H17z"/><path d="M3 19.4h16a4.7 4.7 0 0 1-4 1.8H7a4.7 4.7 0 0 1-4-1.8z"/></svg>
+      <div class="donate-lg" style="margin-top:4px">
+        <img src="../../_assets/donation-icon-circle.png" alt="">
       </div>
       <p class="subtitle">Cooldown is free. If it helps you, a coffee keeps the updates coming. 💙</p>
       <div class="card">
@@ -267,7 +264,6 @@
   <div class="popover">
     <div class="header">
       <span class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5L7 12l7.5 7.5"/></svg></span>
-      <div class="appicon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg></div>
       <span class="title">About Cooldown</span>
       <span class="spacer"></span>
     </div>
@@ -278,7 +274,7 @@
       </div>
       <div>
         <div class="app-title">Cooldown</div>
-        <div style="margin-top:6px"><span class="badge">v0.1.0</span></div>
+        <div style="margin-top:6px"><span class="badge">v1.0</span></div>
       </div>
       <p class="tagline">Your AI is napping. We'll tell you when it wakes up.</p>
       <div class="card lefted">
