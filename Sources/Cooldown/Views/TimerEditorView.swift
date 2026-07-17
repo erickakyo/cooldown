@@ -118,9 +118,7 @@ struct TimerEditorView: View {
                     Stepper(value: $model.windowHours, in: 0...168) {
                         Text("\(model.windowHours)\(l.hoursShort)").monospacedDigit()
                     }
-                    Stepper(value: $model.windowMinutes, in: 0...59, step: 5) {
-                        Text("\(model.windowMinutes)\(l.minutesShort)").monospacedDigit()
-                    }
+                    EditableMinutesStepper(value: $model.windowMinutes, step: 5, unit: l.minutesShort)
                 }
                 .font(.callout)
             }
@@ -143,9 +141,7 @@ struct TimerEditorView: View {
                         Stepper(value: $model.remainingHours, in: 0...168) {
                             Text("\(model.remainingHours)\(l.hoursShort)").monospacedDigit()
                         }
-                        Stepper(value: $model.remainingMinutes, in: 0...59) {
-                            Text("\(model.remainingMinutes)\(l.minutesShort)").monospacedDigit()
-                        }
+                        EditableMinutesStepper(value: $model.remainingMinutes, step: 1, unit: l.minutesShort)
                         Spacer()
                     }
                     .font(.callout)
@@ -244,4 +240,39 @@ struct TimerEditorView: View {
         }
         onDone()
     }
+}
+
+/// Como `Stepper`, mas o número é um `TextField` clicável/editável em vez de
+/// um `Text` — cobre o caso de digitar direto (ex. "45") além de clicar nas
+/// setas. Sempre grampeado em 0...59 mesmo com digitação manual.
+private struct EditableMinutesStepper: View {
+    @Binding var value: Int
+    var step: Int = 1
+    let unit: String
+
+    private static let range = 0...59
+
+    var body: some View {
+        HStack(spacing: 4) {
+            TextField("", value: Binding(
+                get: { value },
+                set: { value = min(max($0, Self.range.lowerBound), Self.range.upperBound) }
+            ), formatter: Self.formatter)
+                .textFieldStyle(.plain)
+                .multilineTextAlignment(.trailing)
+                .frame(width: 22)
+                .monospacedDigit()
+            Text(unit)
+            Stepper("", value: $value, in: Self.range, step: step)
+                .labelsHidden()
+        }
+    }
+
+    private static let formatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.minimum = NSNumber(value: range.lowerBound)
+        f.maximum = NSNumber(value: range.upperBound)
+        f.maximumFractionDigits = 0
+        return f
+    }()
 }
