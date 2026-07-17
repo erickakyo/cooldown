@@ -14,7 +14,8 @@ DMG="dist/Cooldown-$VERSION.dmg"
 
 ./scripts/build.sh
 
-echo "▸ Gerando $DMG…"
+# ${VAR} com chaves antes de "…": ver nota em build.sh (bug do bash 3.2)
+echo "▸ Gerando ${DMG}…"
 STAGE=$(mktemp -d)
 cp -R dist/Cooldown.app "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
@@ -22,7 +23,7 @@ rm -f "$DMG"
 hdiutil create -volname "Cooldown" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
 rm -rf "$STAGE"
 
-echo "▸ Publicando release v$VERSION…"
+echo "▸ Publicando release v${VERSION}…"
 gh release create "v$VERSION" "$DMG" \
   --title "Cooldown v$VERSION" \
   --notes "⏳ Cooldown v$VERSION — menu bar app that alerts you when your AI usage limit resets.

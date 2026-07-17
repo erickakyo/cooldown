@@ -16,7 +16,9 @@ swift build -c release
 
 BIN="$(swift build -c release --show-bin-path)/Cooldown"
 
-echo "▸ Montando $APP…"
+# ${VAR} com chaves: o bash 3.2 do macOS, em locale não-UTF-8, engole o
+# primeiro byte de um caractere multibyte (…) colado no nome da variável.
+echo "▸ Montando ${APP}…"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/Cooldown"
