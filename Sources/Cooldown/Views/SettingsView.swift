@@ -112,8 +112,8 @@ struct SettingsView: View {
                 GlassCard {
                     VStack(spacing: 0) {
                         row(icon: "arrow.triangle.2.circlepath", color: .gray,
-                            title: "\(AppConfig.appName) v\(AppConfig.version)") {
-                            Button(l.checkUpdates) { updater.check() }
+                            title: l.versionLabel(AppConfig.version)) {
+                            Button(l.checkUpdatesShort) { updater.check() }
                                 .buttonStyle(GlassPillButtonStyle())
                                 .disabled(updater.status == .checking)
                         }

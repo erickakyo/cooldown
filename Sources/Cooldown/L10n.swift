@@ -57,6 +57,10 @@ struct L {
     var defaultSoundLabel: String { t("Som padrão", "Default sound") }
     var showCountdown: String { t("Contagem na barra de menus", "Countdown in menu bar") }
     var checkUpdates: String { t("Verificar atualizações…", "Check for updates…") }
+    /// Versão curta para o botão nas Configurações — a longa em pt-BR não
+    /// cabe na linha ao lado do rótulo de versão (popover de 340pt).
+    var checkUpdatesShort: String { t("Verificar…", "Check…") }
+    func versionLabel(_ v: String) -> String { t("Versão \(v)", "Version \(v)") }
     var upToDate: String { t("Você já está na versão mais recente.", "You're on the latest version.") }
     func updateAvailable(_ v: String) -> String { t("Nova versão \(v) disponível!", "New version \(v) available!") }
     // "e Sair" no rótulo: o app precisa fechar para o Finder aceitar

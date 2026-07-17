@@ -33,6 +33,7 @@ struct GlassPillButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.callout.weight(.medium))
+            .lineLimit(1)
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
             .background(
