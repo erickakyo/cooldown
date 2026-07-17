@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cooldown</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="theme-system">
+  <div class="glass-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="snowflake-icon">❄️</span>
+        <span class="logo-text">Cooldown</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-goto-settings" class="icon-button" title="Settings">⚙️</button>
+      </div>
+    </header>
+
+    <!-- Update Banner -->
+    <div id="update-banner" class="banner hidden">
+      <span data-l10n="updateAvailable">Update available!</span>
+      <a href="https://github.com/erickakyo/cooldown/releases" target="_blank" data-l10n="download">Download</a>
+    </div>
+
+    <!-- MAIN VIEW -->
+    <main id="view-main" class="view active">
+      <div class="timer-list" id="timers-container">
+        <!-- Timers will be dynamically rendered here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">⏳</div>
+        <p data-l10n="noTimers">No timers configured yet.</p>
+        <button id="btn-onboarding-add" class="primary-button" data-l10n="addFirstTimer">Add Your First Timer</button>
+      </div>
+
+      <!-- Add Timer Floating Button -->
+      <div class="floating-action">
+        <button id="btn-goto-add" class="fab" title="Add Timer">+</button>
+      </div>
+    </main>
+
+    <!-- SETTINGS VIEW -->
+    <section id="view-settings" class="view">
+      <div class="view-header">
+        <button id="btn-settings-back" class="back-button">←</button>
+        <h2 data-l10n="settings">Settings</h2>
+      </div>
+
+      <div class="settings-content">
+        <!-- Language Option -->
+        <div class="setting-group">
+          <label data-l10n="language">Language</label>
+          <select id="setting-language">
+            <option value="en">English 🇺🇸</option>
+            <option value="pt">Português 🇧🇷</option>
+          </select>
+        </div>
+
+        <!-- Appearance Option -->
+        <div class="setting-group">
+          <label data-l10n="appearance">Appearance</label>
+          <select id="setting-appearance">
+            <option value="system" data-l10n="themeSystem">System</option>
+            <option value="light" data-l10n="themeLight">Light</option>
+            <option value="dark" data-l10n="themeDark">Dark</option>
+          </select>
+        </div>
+
+        <!-- Notification Sound -->
+        <div class="setting-group">
+          <label data-l10n="sound">Notification Sound</label>
+          <div class="sound-select-row">
+            <select id="setting-sound">
+              <option value="default" data-l10n="soundDefault">Default</option>
+              <option value="glass">Glass</option>
+              <option value="ping">Ping</option>
+              <option value="bell">Bell</option>
+              <option value="none" data-l10n="soundNone">None</option>
+            </select>
+            <button id="btn-preview-sound" class="icon-button" title="Play Preview">🔊</button>
+          </div>
+        </div>
+
+        <!-- Pre-alert Option -->
+        <div class="setting-group">
+          <label data-l10n="preAlert">Pre-Alert Warning</label>
+          <select id="setting-prealert">
+            <option value="0" data-l10n="preAlertNone">None</option>
+            <option value="300" data-l10n="preAlert5m">5 minutes before</option>
+            <option value="600" data-l10n="preAlert10m">10 minutes before</option>
+            <option value="900" data-l10n="preAlert15m">15 minutes before</option>
+          </select>
+        </div>
+
+        <!-- Integration Option -->
+        <div class="setting-group">
+          <div class="checkbox-row">
+            <input type="checkbox" id="setting-autodetect">
+            <label for="setting-autodetect" data-l10n="autoDetectLimits">Auto-detect AI limit messages</label>
+          </div>
+          <p class="setting-help" data-l10n="autoDetectHelp">Automatically triggers/resets Cooldown timers when you send messages or hit limits on Claude, ChatGPT or Gemini.</p>
+        </div>
+
+        <hr class="separator">
+
+        <!-- Nav buttons to About/Donate -->
+        <button id="btn-goto-about" class="secondary-button width-100" data-l10n="about">About Cooldown</button>
+        <button id="btn-goto-donate" class="donate-button width-100" data-l10n="supportCoffee">Buy me a coffee ☕</button>
+      </div>
+    </section>
+
+    <!-- EDIT / ADD TIMER VIEW -->
+    <section id="view-edit" class="view">
+      <div class="view-header">
+        <button id="btn-edit-back" class="back-button">←</button>
+        <h2 id="edit-view-title" data-l10n="addTimer">Add Timer</h2>
+      </div>
+
+      <form id="timer-form" class="settings-content">
+        <input type="hidden" id="timer-id">
+
+        <!-- Presets Selection -->
+        <div class="setting-group" id="preset-group">
+          <label data-l10n="servicePreset">Service Preset</label>
+          <div class="preset-grid">
+            <button type="button" class="preset-btn" data-preset="claude">Claude (5h)</button>
+            <button type="button" class="preset-btn" data-preset="chatgpt">ChatGPT (3h)</button>
+            <button type="button" class="preset-btn" data-preset="gemini">Gemini (24h)</button>
+            <button type="button" class="preset-btn" data-preset="antigravity">Antigravity (5h)</button>
+            <button type="button" class="preset-btn" data-preset="codex">Codex (5h)</button>
+            <button type="button" class="preset-btn" data-preset="custom" data-l10n="customPreset">Custom</button>
+          </div>
+        </div>
+
+        <!-- Name Input -->
+        <div class="setting-group">
+          <label data-l10n="displayName">Display Name</label>
+          <input type="text" id="timer-name" required placeholder="e.g. Claude — Work">
+        </div>
+
+        <!-- Duration Selection -->
+        <div class="setting-group">
+          <label data-l10n="duration">Duration</label>
+          <div class="duration-inputs">
+            <div class="duration-field">
+              <input type="number" id="timer-hours" min="0" max="168" value="5" required>
+              <span data-l10n="hoursShort">h</span>
+            </div>
+            <div class="duration-field">
+              <input type="number" id="timer-minutes" min="0" max="59" value="0" required>
+              <span data-l10n="minutesShort">m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto repeat Option -->
+        <div class="setting-group">
+          <div class="checkbox-row">
+            <input type="checkbox" id="timer-autorepeat">
+            <label for="timer-autorepeat" data-l10n="autoRepeat">Auto-repeat cycles</label>
+          </div>
+          <p class="setting-help" data-l10n="autoRepeatHelp">Starts a new cycle immediately after expiring (can drift from real AI window resets).</p>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="btn-delete-timer" class="delete-button hidden" data-l10n="delete">Delete</button>
+          <button type="submit" id="btn-save-timer" class="primary-button" data-l10n="save">Save</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ABOUT VIEW -->
+    <section id="view-about" class="view">
+      <div class="view-header">
+        <button id="btn-about-back" class="back-button">←</button>
+        <h2 data-l10n="about">About</h2>
+      </div>
+
+      <div class="settings-content text-center">
+        <div class="about-logo">❄️</div>
+        <h3>Cooldown</h3>
+        <p class="version">Version 1.0.0 (Chrome Extension)</p>
+        <p class="about-desc" data-l10n="aboutDesc">
+          A lightweight timer that alerts you when your AI limits reset. No accounts, no data leaves your browser.
+        </p>
+        <p class="salto-credit">
+          Made with ☕ by <a href="https://salto.solutions/?utm_source=cooldown&utm_medium=extension&utm_campaign=about" target="_blank">Salto Solutions</a>.
+        </p>
+        <p class="license">© 2026 Salto Solutions. All rights reserved.</p>
+      </div>
+    </section>
+
+    <!-- DONATE VIEW -->
+    <section id="view-donate" class="view">
+      <div class="view-header">
+        <button id="btn-donate-back" class="back-button">←</button>
+        <h2 data-l10n="donateTitle">Buy me a coffee ☕</h2>
+      </div>
+
+      <div class="settings-content text-center">
+        <p class="donate-intro" data-l10n="donateIntro">
+          Cooldown is free and open source. If it saves you from staring at limit screen warnings, support the project!
+        </p>
+
+        <div class="donation-options">
+          <a id="btn-donate-stripe" class="donation-link stripe-button" target="_blank" href="https://buy.stripe.com/28EdR25Jsffg3pu3zYd7q00">
+            <span>Stripe (International)</span>
+          </a>
+
+          <a id="btn-donate-mp" class="donation-link mercadopago-button" target="_blank" href="https://link.mercadopago.com.br/cooldown">
+            <span>Mercado Pago / Pix (Brasil)</span>
+          </a>
+
+          <div class="pix-copypaste">
+            <span class="pix-title" data-l10n="pixCode">Pix Copy & Paste Key:</span>
+            <div class="pix-box">
+              <code id="pix-code">499817ae-9dcd-4bc4-96df-67bbef4a96f6</code>
+              <button id="btn-copy-pix" class="copy-btn" data-l10n="copy">Copy</button>
+            </div>
+            <span id="copy-toast" class="toast hidden" data-l10n="copied">Copied!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

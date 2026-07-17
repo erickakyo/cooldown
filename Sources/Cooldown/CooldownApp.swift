@@ -147,6 +147,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
 
+    /// Como `drawSymbol`, mas centraliza verticalmente no canvas em vez de
+    /// usar um `y` fixo — evita que o símbolo pareça "descentralizado" em
+    /// relação ao floco de neve (a altura real de cada SF Symbol varia).
+    private static func drawSymbolCentered(_ name: String, pointSize: CGFloat, x: CGFloat, canvasHeight: CGFloat) {
+        let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .regular)
+        guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) else { return }
+        let y = (canvasHeight - symbol.size.height) / 2
+        symbol.draw(
+            in: NSRect(x: x, y: y, width: symbol.size.width, height: symbol.size.height),
+            from: .zero, operation: .sourceOver, fraction: 1
+        )
+    }
+
     private static func drawIconFlat(in rect: NSRect) {
         if let path = Bundle.main.path(forResource: "icon-flat", ofType: "png"),
            let img = NSImage(contentsOfFile: path) {
@@ -170,13 +184,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }()
 
     /// Ícone da barra com timer(s) configurado(s): floco de neve (marca) +
-    /// ampulheta menor (semântica de timer).
+    /// ampulheta menor (semântica de timer). Margens espelham as do
+    /// `snowflakeOnlyIcon` (1.5pt) para os dois ícones parecerem do mesmo
+    /// "peso" na barra ao alternar entre eles.
     private static let menuBarIcon: NSImage = {
-        let size = NSSize(width: 22, height: 16)
+        let size = NSSize(width: 24, height: 16)
         let image = NSImage(size: size)
         image.lockFocus()
-        drawIconFlat(in: NSRect(x: 0, y: 1.5, width: 13, height: 13))
-        drawSymbol("hourglass", pointSize: 8.5, x: 15, y: 0.5)
+        drawIconFlat(in: NSRect(x: 1.5, y: 1.5, width: 13, height: 13))
+        drawSymbolCentered("hourglass", pointSize: 8.5, x: 16.5, canvasHeight: size.height)
         image.unlockFocus()
         image.isTemplate = true
         return image

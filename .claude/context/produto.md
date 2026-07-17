@@ -125,17 +125,15 @@ link do Sobre com UTM, git/GitHub só com a conta erickakyo.
       outras máquinas. Depois de ativa: configurar assinatura/notarização
       no `scripts/release.sh`
 
-### Divulgação
-- [ ] Página do Cooldown no site salto.solutions apontando para a release
-      (acessos do app já chegam com utm_source=cooldown / medium=app /
-      campaign=about no GA4)
-- [ ] Revisar texto da janela "Sobre" com os serviços reais do site
+### Divulgação (2026-07-17)
+Canais definidos: LinkedIn, Instagram, Reddit e outros (ver
+`.claude/context/lancamento.md` para textos e estratégia por canal).
+Página no salto.solutions **já existe**.
 
 ### Backlog técnico (sem pressa)
 - [ ] Migrar UpdateChecker → Sparkle 2 quando houver Xcode instalado
       (auto-update de verdade, sem abrir navegador)
 - [ ] Atalho global de teclado para abrir o painel
-- [ ] Ajuste fino do espaçamento do ícone da barra se necessário (varia por tela)
 
 ### Concluídas
 - [x] Repositório GitHub público (`erickakyo/cooldown`) + release v0.1.0
@@ -152,6 +150,14 @@ link do Sobre com UTM, git/GitHub só com a conta erickakyo.
       renderização de `Text(emoji)` para `Image(nsImage:)` com o emoji
       desenhado em bitmap (cache em `PillPicker.swift`) — vibrancy do glass
       não afeta bitmaps, só texto (2026-07-17)
+- [x] Ajuste fino do ícone da barra de menus (2026-07-17): a ampulheta
+      usava um `y` fixo (0.5) que a deixava visivelmente mais baixa que o
+      floco de neve, e a margem esquerda do ícone com timer (0) não batia
+      com a do ícone sem timer (1.5), então os dois pareciam "pular" de
+      posição ao alternar. Corrigido em `CooldownApp.swift`:
+      `drawSymbolCentered` centraliza o símbolo verticalmente pela altura
+      real do `NSImage` renderizado (em vez de `y` chutado), e a margem
+      esquerda de 1.5 foi igualada entre os dois ícones.
 
 ### Spacebar Bug — causa raiz (2026-07-17)
 
