@@ -24,7 +24,17 @@ Cooldown stores everything locally on your Mac (`UserDefaults`). No account, no 
 
 ## Install
 
-Download the latest `Cooldown.dmg` from [Releases](../../releases) *(coming soon)*, drag it to Applications, and allow notifications on first launch.
+### Homebrew (recommended)
+
+```bash
+brew install --cask erickakyo/tap/cooldown
+```
+
+### Manual download
+
+Download the latest `Cooldown-x.y.z.dmg` from [Releases](../../releases), drag it to Applications, and allow notifications on first launch.
+
+> **Note:** Cooldown is not notarized by Apple yet. If macOS blocks the first launch, right-click the app in Applications and choose **Open**.
 
 ## Build from source
 
