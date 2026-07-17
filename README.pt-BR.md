@@ -47,8 +47,10 @@ Requer macOS 14+ e Command Line Tools do Xcode (Xcode completo **não** é neces
 ```bash
 git clone https://github.com/erickakyo/cooldown.git
 cd cooldown
-scripts/build.sh --run   # compila dist/Cooldown.app e abre o app
+scripts/build.sh --install   # compila e instala em /Applications
 ```
+
+Para desenvolvimento, `scripts/build.sh --run` compila e abre direto de `dist/`, sem instalar.
 
 > Nota: a macro `@State` do SwiftUI não compila com as Command Line Tools no SDK do macOS 26, então as views usam `ObservableObject` + `@StateObject`. Detalhes de arquitetura no [CLAUDE.md](CLAUDE.md).
 

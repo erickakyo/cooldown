@@ -4,7 +4,8 @@
 #
 # Uso:
 #   scripts/build.sh            # build release + monta dist/Cooldown.app
-#   scripts/build.sh --run      # build + abre o app
+#   scripts/build.sh --run      # build + abre o app (desenvolvimento)
+#   scripts/build.sh --install  # build + instala em /Applications e abre
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -37,9 +38,22 @@ codesign --force --deep --sign - "$APP"
 echo "✅ Pronto: $APP"
 
 if [ "${1:-}" = "--run" ]; then
-  # Relança o app do zero
+  # Relança o app do zero (rodando direto de dist/ — fluxo de desenvolvimento)
   pkill -x Cooldown 2>/dev/null || true
   sleep 0.5
   open "$APP"
-  echo "▸ Cooldown aberto — confira a barra de menus (ícone de ampulheta)."
+  echo "▸ Cooldown aberto — confira a barra de menus (ícone de floco de neve)."
+fi
+
+if [ "${1:-}" = "--install" ]; then
+  DEST="/Applications/Cooldown.app"
+  echo "▸ Instalando em ${DEST}…"
+  pkill -x Cooldown 2>/dev/null || true
+  sleep 0.5
+  rm -rf "$DEST"
+  cp -R "$APP" "$DEST"
+  open "$DEST"
+  echo "✅ Cooldown instalado em /Applications e aberto."
+  echo "  Se 'Iniciar com o sistema' já estava ativo, desative e reative nas"
+  echo "  configurações do app para o login item apontar pro novo caminho."
 fi
