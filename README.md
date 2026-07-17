@@ -43,7 +43,7 @@ Download the latest `Cooldown-x.y.z.dmg` from [Releases](../../releases), drag i
 Cooldown is not notarized by Apple yet, so macOS blocks the first launch **regardless of install method** (Homebrew or DMG). Click **OK** (not "Move to Trash"), then go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. Or, in Terminal:
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/Cooldown.app
+xattr -dr com.apple.quarantine /Applications/Cooldown.app && open /Applications/Cooldown.app
 ```
 
 ## Updating
@@ -52,7 +52,10 @@ Cooldown checks for new versions automatically when it starts (and every 24 hour
 
 Update using the same method you installed with:
 
-- **Homebrew:** `brew upgrade --cask erickakyo/tap/cooldown`
+- **Homebrew** (upgrades, unblocks Gatekeeper and reopens the app, all in one go):
+  ```bash
+  brew upgrade --cask erickakyo/tap/cooldown && xattr -dr com.apple.quarantine /Applications/Cooldown.app && open /Applications/Cooldown.app
+  ```
 - **Manual (DMG):** click **Download & Quit** in the update banner (Cooldown closes itself so Finder can replace it), then drag the new Cooldown to Applications. If you downloaded manually, quit Cooldown first (right-click the menu bar icon → Quit). The first launch after a manual download hits the Gatekeeper prompt again — see the note in [Install](#install)
 - **From source:** in your clone, `git pull && scripts/build.sh --install`
 
