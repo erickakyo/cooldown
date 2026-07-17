@@ -6,6 +6,8 @@ O Cooldown é um app leve de barra de menus para macOS que te avisa — com som 
 
 *Read in [English](README.md).*
 
+![Cooldown na barra de menus do macOS, com timers para Claude, Codex, ChatGPT e Gemini](docs/hero.png)
+
 ## Recursos
 
 - ⏱️ **Múltiplos timers** — acompanhe várias contas e serviços ao mesmo tempo (ex.: "Claude — Trabalho" e "Claude — Pessoal")
@@ -17,6 +19,8 @@ O Cooldown é um app leve de barra de menus para macOS que te avisa — com som 
 - 🌗 **Aparência** — sistema / claro / escuro
 - 🇧🇷🇺🇸 **Bilíngue** — português e inglês, com troca instantânea
 - 🚀 **Iniciar com o sistema**, contagem na barra de menus, verificador de atualizações
+
+![Telas de configurações, doação e sobre](docs/screens.png)
 
 ## Privacidade
 

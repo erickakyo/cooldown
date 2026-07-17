@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 980px; height: 580px; overflow: hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: rgba(255,255,255,.92);
+  }
+
+  /* ===== Wallpaper ===== */
+  .desktop {
+    position: relative; width: 980px; height: 580px; overflow: hidden;
+    background:
+      radial-gradient(90% 60% at 15% 108%, rgba(140,170,255,.16), transparent 60%),
+      radial-gradient(70% 45% at 78% 112%, rgba(255,205,150,.13), transparent 60%),
+      radial-gradient(120% 80% at 60% -30%, rgba(70,110,200,.10), transparent 55%),
+      linear-gradient(165deg, #06080d 0%, #0b111c 55%, #080c14 100%);
+  }
+  .wave {
+    position: absolute; left: -10%; right: -10%; bottom: 8%; height: 200px;
+    background: radial-gradient(55% 100% at 50% 100%, rgba(190,215,255,.20), transparent 70%);
+    filter: blur(6px);
+  }
+
+  /* ===== Menu bar ===== */
+  .menubar {
+    position: relative; z-index: 3;
+    height: 26px; padding: 0 14px;
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(20,22,28,.55);
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+    font-size: 13px;
+  }
+  .menubar .apple { font-size: 14px; }
+  .menubar .appname { font-weight: 700; }
+  .menubar .menus { display: flex; gap: 16px; color: rgba(255,255,255,.85); }
+  .menubar .spacer { flex: 1; }
+  .statusitem {
+    display: flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 6px;
+    background: rgba(255,255,255,.22);
+    font-variant-numeric: tabular-nums;
+    font-size: 12.5px; font-weight: 500;
+  }
+  .statusitem svg { display: block; }
+  .clock { font-size: 13px; color: rgba(255,255,255,.9); }
+
+  /* ===== Popover ===== */
+  .popover-wrap { position: absolute; top: 26px; right: 96px; z-index: 2; }
+  .arrow {
+    width: 18px; height: 18px; margin: 0 0 -9px auto; margin-right: 86px;
+    background: rgba(31,32,38,.92);
+    transform: rotate(45deg); border-radius: 3px;
+  }
+  .popover {
+    position: relative;
+    width: 340px; height: 460px;
+    display: flex; flex-direction: column;
+    border-radius: 20px;
+    background: linear-gradient(rgba(34,36,44,.88), rgba(26,28,34,.92));
+    -webkit-backdrop-filter: blur(50px) saturate(180%);
+    backdrop-filter: blur(50px) saturate(180%);
+    border: .5px solid rgba(255,255,255,.14);
+    box-shadow: 0 22px 60px rgba(0,0,0,.55), 0 3px 14px rgba(0,0,0,.35);
+    overflow: hidden;
+  }
+
+  .header {
+    display: flex; align-items: center; gap: 7px;
+    padding: 10px 14px;
+  }
+  .appicon {
+    width: 20px; height: 20px; border-radius: 5px;
+    background: linear-gradient(135deg, #26a6f2, #1440a6);
+    display: grid; place-items: center; color: #fff;
+    flex: none;
+  }
+  .header .title { font-size: 13px; font-weight: 600; }
+  .header .spacer { flex: 1; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+    background: rgba(255,255,255,.12);
+    color: rgba(255,255,255,.92);
+    white-space: nowrap;
+  }
+  .pill.prominent { background: #0a84ff; color: #fff; }
+
+  .divider { height: .5px; background: rgba(255,255,255,.12); }
+
+  .content { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  .card {
+    border-radius: 14px; padding: 12px;
+    background: rgba(255,255,255,.065);
+    border: .5px solid rgba(255,255,255,.10);
+  }
+  .row-top { display: flex; align-items: center; gap: 8px; }
+  .row-top .name { font-size: 12px; font-weight: 600; }
+  .row-top .spacer { flex: 1; }
+  .accent { color: #4ba7ff; }
+  .secondary { color: rgba(255,255,255,.55); }
+  .tertiary { color: rgba(255,255,255,.35); }
+  .green { color: #30d158; }
+
+  .countdown-row {
+    display: flex; align-items: baseline; margin-top: 8px;
+  }
+  .countdown {
+    font-size: 24px; font-weight: 500;
+    font-family: ui-rounded, -apple-system, sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .3px;
+  }
+  .countdown-row .until { margin-left: auto; font-size: 10.5px; color: rgba(255,255,255,.55); }
+  .progress {
+    margin-top: 7px; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,.14); overflow: hidden;
+  }
+  .progress i { display: block; height: 100%; border-radius: 2px; background: #0a84ff; }
+
+  .state-row { display: flex; align-items: center; gap: 6px; margin-top: 9px; }
+  .state-row .label { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; }
+  .state-row .spacer { flex: 1; }
+  .state-row .stopped { font-size: 12px; color: rgba(255,255,255,.55); font-weight: 400; }
+
+  .footer {
+    display: flex; align-items: center; gap: 14px;
+    padding: 8px 14px;
+    color: rgba(255,255,255,.55);
+  }
+  .footer .spacer { flex: 1; }
+  .footer svg { display: block; }
+</style>
+</head>
+<body>
+<div class="desktop">
+  <div class="wave"></div>
+
+  <div class="menubar">
+    <svg class="apple" width="13" height="15" viewBox="0 0 384 512" fill="#fff"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+    <span class="appname">Finder</span>
+    <span class="menus"><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span></span>
+    <span class="spacer"></span>
+    <span class="statusitem">
+      <!-- snowflake -->
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round">
+        <g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+        <g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+        <g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+        <g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+        <g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+        <g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+      </svg>
+      <!-- hourglass -->
+      <svg width="10" height="12" viewBox="0 0 20 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round">
+        <path d="M4 2.5h12M4 21.5h12M5.5 2.5c0 5 3.2 6.2 4.5 7.5 1.3-1.3 4.5-2.5 4.5-7.5M5.5 21.5c0-5 3.2-6.2 4.5-7.5 1.3 1.3 4.5 2.5 4.5 7.5"/>
+      </svg>
+      <span>3:47:12</span>
+    </span>
+    <span class="clock">Fri Jul 17&nbsp;&nbsp;9:41 AM</span>
+  </div>
+
+  <div class="popover-wrap">
+    <div class="arrow"></div>
+    <div class="popover">
+      <div class="header">
+        <div class="appicon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+            <g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+            <g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+            <g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+            <g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+            <g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+            <g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g>
+          </svg>
+        </div>
+        <span class="title">Cooldown</span>
+        <span class="spacer"></span>
+        <span class="pill prominent">
+          <svg width="10" height="10" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg>
+          New timer
+        </span>
+      </div>
+      <div class="divider"></div>
+
+      <div class="content">
+        <!-- Claude — Work: running -->
+        <div class="card">
+          <div class="row-top">
+            <svg class="accent" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.1 7.4 7.4 2.1-7.4 2.1L12 21.5l-2.1-7.4-7.4-2.1 7.4-2.1z"/></svg>
+            <span class="name">Claude — Work</span>
+            <span class="spacer"></span>
+            <svg class="secondary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.6"/><circle cx="7.6" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="16.4" cy="12" r="1.15" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="countdown-row">
+            <span class="countdown">3:47:12</span>
+            <span class="until">1:29 PM</span>
+          </div>
+          <div class="progress"><i style="width:24%"></i></div>
+        </div>
+
+        <!-- Codex: running -->
+        <div class="card">
+          <div class="row-top">
+            <svg class="accent" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.4"/><path d="M7 9.5l3 2.5-3 2.5M12.5 15h4"/></svg>
+            <span class="name">Codex</span>
+            <span class="spacer"></span>
+            <svg class="secondary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.6"/><circle cx="7.6" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="16.4" cy="12" r="1.15" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="countdown-row">
+            <span class="countdown">0:58:03</span>
+            <span class="until">10:39 AM</span>
+          </div>
+          <div class="progress"><i style="width:81%"></i></div>
+        </div>
+
+        <!-- ChatGPT: ready -->
+        <div class="card">
+          <div class="row-top">
+            <svg class="accent" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M9.5 4C5.9 4 3 6.4 3 9.4c0 1.7 1 3.3 2.4 4.3L5 17l2.8-1.6c.5.1 1.1.2 1.7.2"/><path d="M14.5 8c3.6 0 6.5 2.2 6.5 5s-2.9 5-6.5 5c-.6 0-1.2-.1-1.7-.2L10 19.4l.4-2.7C9 15.7 8 14.3 8 13c0-2.8 2.9-5 6.5-5z"/></svg>
+            <span class="name">ChatGPT</span>
+            <span class="spacer"></span>
+            <svg class="secondary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.6"/><circle cx="7.6" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="16.4" cy="12" r="1.15" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="state-row">
+            <span class="label green">
+              <svg width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#30d158"/><path d="M7.5 12.2l3 3 5.6-6.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Ready!
+            </span>
+            <span class="spacer"></span>
+            <span class="pill prominent">New cycle (3h)</span>
+            <span class="pill">OK</span>
+          </div>
+        </div>
+
+        <!-- Gemini: idle -->
+        <div class="card">
+          <div class="row-top">
+            <svg class="accent" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2.8L21.2 12 12 21.2 2.8 12z"/></svg>
+            <span class="name">Gemini</span>
+            <span class="spacer"></span>
+            <svg class="secondary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.6"/><circle cx="7.6" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="16.4" cy="12" r="1.15" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="state-row">
+            <span class="stopped">Stopped</span>
+            <span class="spacer"></span>
+            <span class="pill prominent">New cycle (24h)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="footer">
+        <!-- gear -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="2.3"/><path d="M12 5.9V3.6M12 20.4v-2.3M6.1 12H3.8M20.2 12h-2.3M7.8 7.8L6.2 6.2M17.8 17.8l-1.6-1.6M16.2 7.8l1.6-1.6M6.2 17.8l1.6-1.6"/></svg>
+        <!-- cup -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h13v6.2A5.3 5.3 0 0 1 11.7 17.5H9.3A5.3 5.3 0 0 1 4 12.2z"/><path d="M17 8h1.6a2.7 2.7 0 0 1 0 5.4H17V11h1.4a1 1 0 0 0 0-2H17z"/><path d="M3 19.4h16a4.7 4.7 0 0 1-4 1.8H7a4.7 4.7 0 0 1-4-1.8z"/></svg>
+        <!-- info -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.8"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r="1" fill="currentColor" stroke="none"/></svg>
+        <span class="spacer"></span>
+        <!-- power -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.4v7.2"/><path d="M7.2 6.2a8 8 0 1 0 9.6 0"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

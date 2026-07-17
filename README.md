@@ -6,6 +6,8 @@ Cooldown is a lightweight macOS menu bar app that alerts you — with a sound an
 
 *Leia em [português](README.pt-BR.md).*
 
+![Cooldown living in the macOS menu bar, with timers for Claude, Codex, ChatGPT and Gemini](docs/hero.png)
+
 ## Features
 
 - ⏱️ **Multiple timers** — track several accounts and services at once (e.g. "Claude — Work" and "Claude — Personal")
@@ -17,6 +19,8 @@ Cooldown is a lightweight macOS menu bar app that alerts you — with a sound an
 - 🌗 **Appearance** — system / light / dark
 - 🇧🇷🇺🇸 **Bilingual** — Portuguese and English, switchable instantly
 - 🚀 **Launch at login**, countdown in the menu bar, update checker
+
+![Settings, donation and about screens](docs/screens.png)
 
 ## Privacy
 

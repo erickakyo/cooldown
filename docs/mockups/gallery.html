@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1140px; height: 560px; overflow: hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: rgba(255,255,255,.92);
+  }
+  .desktop {
+    position: relative; width: 1140px; height: 560px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; gap: 30px;
+    background:
+      radial-gradient(90% 60% at 15% 108%, rgba(140,170,255,.16), transparent 60%),
+      radial-gradient(70% 45% at 78% 112%, rgba(255,205,150,.13), transparent 60%),
+      radial-gradient(120% 80% at 60% -30%, rgba(70,110,200,.10), transparent 55%),
+      linear-gradient(165deg, #06080d 0%, #0b111c 55%, #080c14 100%);
+  }
+
+  .popover {
+    width: 340px; height: 460px;
+    display: flex; flex-direction: column;
+    border-radius: 20px;
+    background: linear-gradient(rgba(34,36,44,.88), rgba(26,28,34,.92));
+    border: .5px solid rgba(255,255,255,.14);
+    box-shadow: 0 22px 60px rgba(0,0,0,.55), 0 3px 14px rgba(0,0,0,.35);
+    overflow: hidden; flex: none;
+  }
+
+  .header { display: flex; align-items: center; gap: 7px; padding: 10px 14px; }
+  .appicon {
+    width: 20px; height: 20px; border-radius: 5px;
+    background: linear-gradient(135deg, #26a6f2, #1440a6);
+    display: grid; place-items: center; color: #fff; flex: none;
+  }
+  .appicon-lg {
+    width: 68px; height: 68px; border-radius: 15px;
+    background: linear-gradient(135deg, #26a6f2, #1440a6);
+    display: grid; place-items: center; color: #fff; flex: none;
+    box-shadow: 0 10px 24px rgba(20,64,166,.4);
+  }
+  .coffee-lg {
+    width: 68px; height: 68px; border-radius: 15px;
+    background: linear-gradient(135deg, #ed9438, #854719);
+    display: grid; place-items: center; color: #fff; flex: none;
+    box-shadow: 0 10px 24px rgba(133,71,25,.4);
+  }
+  .header .title { font-size: 13px; font-weight: 600; }
+  .header .spacer { flex: 1; }
+  .back { color: rgba(255,255,255,.75); display: flex; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+    background: rgba(255,255,255,.12); color: rgba(255,255,255,.92);
+    white-space: nowrap;
+  }
+  .pill.prominent { background: #0a84ff; color: #fff; }
+  .pill .chev { display: flex; flex-direction: column; gap: 1px; opacity: .55; }
+
+  .divider { height: .5px; background: rgba(255,255,255,.12); }
+  .content { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+  .content.center { align-items: center; text-align: center; }
+
+  .card {
+    border-radius: 14px; padding: 12px; width: 100%;
+    background: rgba(255,255,255,.065);
+    border: .5px solid rgba(255,255,255,.10);
+  }
+
+  .secondary { color: rgba(255,255,255,.55); }
+  .tertiary { color: rgba(255,255,255,.35); }
+  .green { color: #30d158; }
+
+  /* Settings rows */
+  .srow { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+  .srow .ic {
+    width: 22px; height: 22px; border-radius: 5.5px; flex: none;
+    display: grid; place-items: center; color: #fff;
+  }
+  .srow .label { font-size: 12px; }
+  .srow .spacer { flex: 1; }
+  .sdivider { height: .5px; background: rgba(255,255,255,.09); margin: 2px 0 2px 30px; }
+  .ic.blue { background: linear-gradient(180deg, #3f9bff, #0a6ee8); }
+  .ic.indigo { background: linear-gradient(180deg, #7d7aff, #4b48d6); }
+  .ic.green { background: linear-gradient(180deg, #4cd964, #23a83c); }
+  .ic.teal { background: linear-gradient(180deg, #46c8dc, #1897ac); }
+  .ic.pink { background: linear-gradient(180deg, #ff6482, #e3274c); }
+  .ic.orange { background: linear-gradient(180deg, #ffa03c, #ef7d0a); }
+  .ic.gray { background: linear-gradient(180deg, #9298a3, #6b727e); }
+
+  .switch { width: 30px; height: 18px; border-radius: 9px; background: #0a84ff; position: relative; flex: none; }
+  .switch::after {
+    content: ""; position: absolute; top: 1.5px; right: 1.5px;
+    width: 15px; height: 15px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
+
+  .status-line { display: flex; align-items: center; gap: 5px; font-size: 11px; margin-top: 8px; }
+
+  /* Donate / About */
+  .subtitle { font-size: 12px; line-height: 1.45; color: rgba(255,255,255,.55); padding: 0 12px; }
+  .stack { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .btnrow { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
+  .wide { width: 100%; justify-content: center; }
+  .pixkey { display: flex; align-items: center; gap: 8px; }
+  .pixkey .key {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10.5px; color: rgba(255,255,255,.55);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .caption { font-size: 11px; color: rgba(255,255,255,.4); }
+  .lefted { text-align: left; }
+
+  .app-title { font-size: 18px; font-weight: 700; }
+  .badge {
+    font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,.6);
+    padding: 2.5px 9px; border-radius: 999px; background: rgba(255,255,255,.12);
+  }
+  .tagline { font-size: 12px; line-height: 1.45; color: rgba(255,255,255,.55); padding: 0 16px; }
+  .devline { font-size: 12px; }
+  .devline .who { font-weight: 600; }
+
+  .footer { display: flex; align-items: center; gap: 14px; padding: 8px 14px; color: rgba(255,255,255,.55); }
+  .footer .spacer { flex: 1; }
+  .footer svg { display: block; }
+  .footer .active { color: #4ba7ff; }
+</style>
+</head>
+<body>
+<div class="desktop">
+
+  <!-- ============ SETTINGS ============ -->
+  <div class="popover">
+    <div class="header">
+      <span class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5L7 12l7.5 7.5"/></svg></span>
+      <div class="appicon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg></div>
+      <span class="title">Settings</span>
+      <span class="spacer"></span>
+    </div>
+    <div class="divider"></div>
+    <div class="content">
+      <div class="card">
+        <div class="srow">
+          <span class="ic blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><circle cx="12" cy="12" r="8.6"/><ellipse cx="12" cy="12" rx="3.8" ry="8.6"/><path d="M3.6 12h16.8"/></svg></span>
+          <span class="label">Language</span>
+          <span class="spacer"></span>
+          <span class="pill">🇺🇸 English <span class="chev"><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 5l4-4 4 4"/></svg><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l4 4 4-4"/></svg></span></span>
+        </div>
+        <div class="sdivider"></div>
+        <div class="srow">
+          <span class="ic indigo"><svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6" fill="none" stroke="#fff" stroke-width="1.7"/><path d="M12 3.4a8.6 8.6 0 0 0 0 17.2z" fill="#fff"/></svg></span>
+          <span class="label">Appearance</span>
+          <span class="spacer"></span>
+          <span class="pill">System <span class="chev"><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 5l4-4 4 4"/></svg><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l4 4 4-4"/></svg></span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="srow">
+          <span class="ic green"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 3.4v7.2"/><path d="M7.2 6.2a8 8 0 1 0 9.6 0"/></svg></span>
+          <span class="label">Launch at login</span>
+          <span class="spacer"></span>
+          <span class="switch"></span>
+        </div>
+        <div class="sdivider"></div>
+        <div class="srow">
+          <span class="ic teal"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 6.8V12l3.4 2.2"/></svg></span>
+          <span class="label">Countdown in menu bar</span>
+          <span class="spacer"></span>
+          <span class="switch"></span>
+        </div>
+        <div class="sdivider"></div>
+        <div class="srow">
+          <span class="ic pink"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M14.8 9.2a4 4 0 0 1 0 5.6M17.4 6.8a7.5 7.5 0 0 1 0 10.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span class="label">Default sound</span>
+          <span class="spacer"></span>
+          <span class="pill">Glass <span class="chev"><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 5l4-4 4 4"/></svg><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l4 4 4-4"/></svg></span></span>
+          <svg class="secondary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.6"/><path d="M10 8.6l5 3.4-5 3.4z" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="sdivider"></div>
+        <div class="srow">
+          <span class="ic orange"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M12 3.5c-3 0-5 2.3-5 5.2 0 3.6-1.3 4.8-2.2 5.7h14.4c-.9-.9-2.2-2.1-2.2-5.7 0-2.9-2-5.2-5-5.2z"/><path d="M10 17.2a2.1 2.1 0 0 0 4 0z"/><circle cx="18" cy="5.6" r="2.6" fill="#ff453a"/></svg></span>
+          <span class="label">Pre-alert</span>
+          <span class="spacer"></span>
+          <span class="pill">10 min before <span class="chev"><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 5l4-4 4 4"/></svg><svg width="7" height="4" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l4 4 4-4"/></svg></span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="srow">
+          <span class="ic gray"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M17.8 2.8v4h-4"/></svg></span>
+          <span class="label">Cooldown v0.1.0</span>
+          <span class="spacer"></span>
+          <span class="pill">Check for updates…</span>
+        </div>
+        <div class="status-line green">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.8 2.8 5.2-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          You're on the latest version.
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="footer">
+      <svg class="active" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="2.3"/><path d="M12 5.9V3.6M12 20.4v-2.3M6.1 12H3.8M20.2 12h-2.3M7.8 7.8L6.2 6.2M17.8 17.8l-1.6-1.6M16.2 7.8l1.6-1.6M6.2 17.8l1.6-1.6"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h13v6.2A5.3 5.3 0 0 1 11.7 17.5H9.3A5.3 5.3 0 0 1 4 12.2z"/><path d="M17 8h1.6a2.7 2.7 0 0 1 0 5.4H17V11h1.4a1 1 0 0 0 0-2H17z"/><path d="M3 19.4h16a4.7 4.7 0 0 1-4 1.8H7a4.7 4.7 0 0 1-4-1.8z"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.8"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r="1" fill="currentColor" stroke="none"/></svg>
+      <span class="spacer"></span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.4v7.2"/><path d="M7.2 6.2a8 8 0 1 0 9.6 0"/></svg>
+    </div>
+  </div>
+
+  <!-- ============ DONATE ============ -->
+  <div class="popover">
+    <div class="header">
+      <span class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5L7 12l7.5 7.5"/></svg></span>
+      <div class="appicon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg></div>
+      <span class="title">Buy me a coffee</span>
+      <span class="spacer"></span>
+    </div>
+    <div class="divider"></div>
+    <div class="content center">
+      <div class="coffee-lg" style="margin-top:4px">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="#fff"><path d="M4 6h13v6.2A5.3 5.3 0 0 1 11.7 17.5H9.3A5.3 5.3 0 0 1 4 12.2z"/><path d="M17 8h1.6a2.7 2.7 0 0 1 0 5.4H17V11h1.4a1 1 0 0 0 0-2H17z"/><path d="M3 19.4h16a4.7 4.7 0 0 1-4 1.8H7a4.7 4.7 0 0 1-4-1.8z"/></svg>
+      </div>
+      <p class="subtitle">Cooldown is free. If it helps you, a coffee keeps the updates coming. 💙</p>
+      <div class="card">
+        <div class="stack">
+          <span class="pill prominent wide">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="M2.8 9.4h18.4" stroke-width="2.4"/></svg>
+            Donate with card (Stripe)
+          </span>
+          <span class="pill wide">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7.2" height="7.2" rx="1"/><rect x="13.8" y="3" width="7.2" height="7.2" rx="1"/><rect x="3" y="13.8" width="7.2" height="7.2" rx="1"/><rect x="13.8" y="13.8" width="3.2" height="3.2"/><rect x="18" y="13.8" width="3" height="3.2"/><rect x="13.8" y="18" width="3.2" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+            Donate via Pix (Mercado Pago)
+          </span>
+        </div>
+      </div>
+      <div class="card lefted">
+        <div class="caption" style="margin-bottom:7px">Or copy the Pix key (random):</div>
+        <div class="pixkey">
+          <span class="key">499817ae-9dcd-4bc4-96df-67bbef4a96f6</span>
+          <span class="spacer" style="flex:1"></span>
+          <span class="pill" style="flex:none">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="8.5" y="8.5" width="12" height="12" rx="2.2"/><path d="M15.5 5.5v-.8A2.2 2.2 0 0 0 13.3 2.5H5.7A2.2 2.2 0 0 0 3.5 4.7v7.6a2.2 2.2 0 0 0 2.2 2.2h.8"/></svg>
+            Copy Pix key
+          </span>
+        </div>
+      </div>
+      <p class="caption">Every bit helps keep the project alive. Thank you! 💙</p>
+    </div>
+    <div class="divider"></div>
+    <div class="footer">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="2.3"/><path d="M12 5.9V3.6M12 20.4v-2.3M6.1 12H3.8M20.2 12h-2.3M7.8 7.8L6.2 6.2M17.8 17.8l-1.6-1.6M16.2 7.8l1.6-1.6M6.2 17.8l1.6-1.6"/></svg>
+      <svg class="active" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h13v6.2A5.3 5.3 0 0 1 11.7 17.5H9.3A5.3 5.3 0 0 1 4 12.2z"/><path d="M17 8h1.6a2.7 2.7 0 0 1 0 5.4H17V11h1.4a1 1 0 0 0 0-2H17z"/><path d="M3 19.4h16a4.7 4.7 0 0 1-4 1.8H7a4.7 4.7 0 0 1-4-1.8z"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.8"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r="1" fill="currentColor" stroke="none"/></svg>
+      <span class="spacer"></span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.4v7.2"/><path d="M7.2 6.2a8 8 0 1 0 9.6 0"/></svg>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT ============ -->
+  <div class="popover">
+    <div class="header">
+      <span class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5L7 12l7.5 7.5"/></svg></span>
+      <div class="appicon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg></div>
+      <span class="title">About Cooldown</span>
+      <span class="spacer"></span>
+    </div>
+    <div class="divider"></div>
+    <div class="content center">
+      <div class="appicon-lg" style="margin-top:4px">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><g><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(60 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(120 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(180 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(240 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g><g transform="rotate(300 12 12)"><path d="M12 12L12 2.6M12 5.6L9.7 3.8M12 5.6L14.3 3.8"/></g></svg>
+      </div>
+      <div>
+        <div class="app-title">Cooldown</div>
+        <div style="margin-top:6px"><span class="badge">v0.1.0</span></div>
+      </div>
+      <p class="tagline">Your AI is napping. We'll tell you when it wakes up.</p>
+      <div class="card lefted">
+        <div class="devline"><span class="secondary">Developed with ☕ by</span> <span class="who">Salto Solutions</span></div>
+        <p class="subtitle lefted" style="padding:0; margin-top:7px">Salto Solutions builds tailor-made digital solutions: AI automations, apps, websites and systems for your business. Need something like this? Talk to us!</p>
+        <div style="margin-top:10px">
+          <span class="pill prominent wide">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M9.5 14.5L15 9M10.5 9H15v4.5"/></svg>
+            Visit salto.solutions
+          </span>
+        </div>
+      </div>
+      <p class="caption">© 2026 Salto Solutions</p>
+    </div>
+    <div class="divider"></div>
+    <div class="footer">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.1"/><circle cx="12" cy="12" r="2.3"/><path d="M12 5.9V3.6M12 20.4v-2.3M6.1 12H3.8M20.2 12h-2.3M7.8 7.8L6.2 6.2M17.8 17.8l-1.6-1.6M16.2 7.8l1.6-1.6M6.2 17.8l1.6-1.6"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h13v6.2A5.3 5.3 0 0 1 11.7 17.5H9.3A5.3 5.3 0 0 1 4 12.2z"/><path d="M17 8h1.6a2.7 2.7 0 0 1 0 5.4H17V11h1.4a1 1 0 0 0 0-2H17z"/><path d="M3 19.4h16a4.7 4.7 0 0 1-4 1.8H7a4.7 4.7 0 0 1-4-1.8z"/></svg>
+      <svg class="active" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.8"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r="1" fill="currentColor" stroke="none"/></svg>
+      <span class="spacer"></span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.4v7.2"/><path d="M7.2 6.2a8 8 0 1 0 9.6 0"/></svg>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
