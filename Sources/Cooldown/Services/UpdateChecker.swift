@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 /// Checa a última release no GitHub e avisa se há versão nova.
@@ -23,6 +24,15 @@ final class UpdateChecker: ObservableObject {
         }
         timer.tolerance = interval * 0.1
         periodicTimer = timer
+    }
+
+    /// Abre a página de download e encerra o app: com o Cooldown aberto, o
+    /// Finder recusa substituir o bundle em /Applications ("item em uso").
+    func openDownloadPageAndQuit() {
+        NSWorkspace.shared.open(AppConfig.releasesPageURL)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            NSApp.terminate(nil)
+        }
     }
 
     func check() {

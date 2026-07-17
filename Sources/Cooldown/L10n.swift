@@ -59,7 +59,9 @@ struct L {
     var checkUpdates: String { t("Verificar atualizações…", "Check for updates…") }
     var upToDate: String { t("Você já está na versão mais recente.", "You're on the latest version.") }
     func updateAvailable(_ v: String) -> String { t("Nova versão \(v) disponível!", "New version \(v) available!") }
-    var download: String { t("Baixar", "Download") }
+    // "e Sair" no rótulo: o app precisa fechar para o Finder aceitar
+    // substituir o bundle em /Applications na atualização manual.
+    var download: String { t("Baixar e Sair", "Download & Quit") }
     var updateError: String { t("Não foi possível verificar agora.", "Couldn't check right now.") }
 
     // Sobre

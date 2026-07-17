@@ -196,7 +196,7 @@ struct MainScreen: View {
                     .foregroundStyle(.orange)
                 Spacer()
                 Button(l.download) {
-                    NSWorkspace.shared.open(AppConfig.releasesPageURL)
+                    updater.openDownloadPageAndQuit()
                 }
                 .buttonStyle(GlassPillButtonStyle(prominent: true))
             }

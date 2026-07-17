@@ -38,7 +38,10 @@ brew install --cask erickakyo/tap/cooldown
 
 Baixe o `Cooldown-x.y.z.dmg` mais recente em [Releases](../../releases), arraste para Aplicativos e permita as notificações na primeira abertura.
 
-> **Nota:** o Cooldown ainda não é notarizado pela Apple. Se o macOS bloquear a primeira abertura, clique com o botão direito no app em Aplicativos e escolha **Abrir**.
+> **Nota:** o Cooldown ainda não é notarizado pela Apple, então o macOS bloqueia a primeira abertura de uma cópia baixada ("A Apple não pôde verificar…"). Clique em **OK** (não em "Mover para o Lixo") e vá em **Ajustes do Sistema → Privacidade e Segurança**, role até o final e clique em **Abrir Mesmo Assim**. Ou, no Terminal:
+> ```bash
+> xattr -dr com.apple.quarantine /Applications/Cooldown.app
+> ```
 
 ## Atualização
 
@@ -47,7 +50,7 @@ O Cooldown verifica novas versões automaticamente ao iniciar (e a cada 24 horas
 Atualize pelo mesmo método que usou pra instalar:
 
 - **Homebrew:** `brew upgrade --cask erickakyo/tap/cooldown`
-- **Manual (DMG):** baixe o DMG mais recente em [Releases](../../releases/latest), abra e arraste o Cooldown para Aplicativos, substituindo a cópia antiga
+- **Manual (DMG):** clique em **Baixar e Sair** no banner de atualização (o Cooldown fecha sozinho pro Finder aceitar a substituição) e arraste o novo Cooldown para Aplicativos. Se baixar por conta própria, saia do Cooldown antes (clique direito no ícone da barra → Sair). A primeira abertura após o download manual cai de novo no aviso do Gatekeeper — veja a nota em [Instalação](#instalação)
 - **Do código-fonte:** no seu clone, `git pull && scripts/build.sh --install`
 
 ## Compilar do código-fonte
