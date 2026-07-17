@@ -28,8 +28,8 @@ gh release create "v$VERSION" "$DMG" \
   --title "Cooldown v$VERSION" \
   --notes "⏳ Cooldown v$VERSION — menu bar app that alerts you when your AI usage limit resets.
 
-**Install:** download the DMG, drag Cooldown to Applications, allow notifications on first launch.
-**Instalação:** baixe o DMG, arraste o Cooldown para Aplicativos e permita as notificações na primeira abertura.
+**Install:** download the DMG, drag Cooldown to Applications, allow notifications on first launch — or \`brew install --cask erickakyo/tap/cooldown\`.
+**Updating from a previous version:** see [How to update](https://github.com/erickakyo/cooldown#updating) · [Como atualizar](https://github.com/erickakyo/cooldown/blob/main/README.pt-BR.md#atualização).
 
 > ⚠️ This build is not notarized yet — macOS may warn on first open (right-click → Open)."
 

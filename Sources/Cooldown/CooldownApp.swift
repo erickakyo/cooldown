@@ -73,9 +73,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             .store(in: &observers)
 
-        // Verifica atualizações em toda inicialização; o resultado aparece
-        // como banner na tela principal e nas configurações.
+        // Verifica atualizações em toda inicialização e a cada 24h; o
+        // resultado aparece como banner na tela principal e nas configurações.
         updater.check()
+        updater.startPeriodicChecks()
 
         // Primeira abertura: mostra o popover sozinho, com o card de boas-vindas.
         if !settings.hasOnboarded {

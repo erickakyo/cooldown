@@ -11,6 +11,19 @@ final class UpdateChecker: ObservableObject {
     }
 
     @Published var status: Status = .idle
+    private var periodicTimer: Timer?
+
+    /// Re-checa em intervalos enquanto o app está aberto — apps de barra de
+    /// menus com "iniciar com o sistema" podem ficar semanas sem relançar,
+    /// e a checagem só na inicialização deixaria o aviso pra trás.
+    func startPeriodicChecks(every interval: TimeInterval = 24 * 3600) {
+        periodicTimer?.invalidate()
+        let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.check() }
+        }
+        timer.tolerance = interval * 0.1
+        periodicTimer = timer
+    }
 
     func check() {
         status = .checking

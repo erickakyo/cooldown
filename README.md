@@ -40,6 +40,16 @@ Download the latest `Cooldown-x.y.z.dmg` from [Releases](../../releases), drag i
 
 > **Note:** Cooldown is not notarized by Apple yet. If macOS blocks the first launch, right-click the app in Applications and choose **Open**.
 
+## Updating
+
+Cooldown checks for new versions automatically when it starts (and every 24 hours while running). When an update is available, an orange banner appears in the main panel. Your timers and settings are always kept — they live in macOS preferences, not in the app bundle.
+
+Update using the same method you installed with:
+
+- **Homebrew:** `brew upgrade --cask erickakyo/tap/cooldown`
+- **Manual (DMG):** download the latest DMG from [Releases](../../releases/latest), open it and drag Cooldown to Applications, replacing the old copy
+- **From source:** in your clone, `git pull && scripts/build.sh --install`
+
 ## Build from source
 
 Requires macOS 14+ and Xcode Command Line Tools (full Xcode **not** required):
